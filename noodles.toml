@@ -1,0 +1,16 @@
+Description = "Narwhal is a modern IRC bot written in Go."
+License = "Apache-2.0"
+Name = "Narwhal"
+Version = 0.1
+
+[Projects]
+	[Projects.narwhal]
+		Binary = true
+		Destination = "build/narwhal"
+		Plugin = "go"
+		Source = "src/narwhal/*.go"
+	[Projects.tusk]
+		Destination = ""
+		Plugin = "go"
+		SimpleName = "tusk"
+		Source = ""
