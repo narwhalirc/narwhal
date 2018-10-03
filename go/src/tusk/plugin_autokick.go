@@ -32,6 +32,10 @@ func (autokicker *NarwhalAutoKickerPlugin) Parse(c *girc.Client, e girc.Event) {
 	user := e.Source.Name
 	host := e.Source.Host
 
+	if user == "" { // User is somehow empty
+		user = e.Source.Ident // Change to using Ident
+	}
+
 	var userShouldBeKicked bool
 
 	// #region Hosts Kick List Check
@@ -79,7 +83,11 @@ func (autokicker *NarwhalAutoKickerPlugin) Parse(c *girc.Client, e girc.Event) {
 		if len(Config.Commands.AutoKick.Users) > 0 { // If we have a Kick list
 			for _, kickUser := range Config.Commands.AutoKick.Users {
 				if strings.HasSuffix(kickUser, "*") { // If we should not be doing exact match
-					if strings.HasPrefix(user, strings.Replace(kickUser, "*", "", -1)) { // If the username begins with this kickUser
+					kickUserWithoutSuffix := strings.Replace(kickUser, "*", "", -1)
+					if strings.HasPrefix(user, kickUserWithoutSuffix) { // If the username begins with this kickUser
+						userShouldBeKicked = true
+						break
+					} else if user == kickUserWithoutSuffix { // Identical match
 						userShouldBeKicked = true
 						break
 					}
@@ -96,6 +104,7 @@ func (autokicker *NarwhalAutoKickerPlugin) Parse(c *girc.Client, e girc.Event) {
 	// #endregion
 
 	if userShouldBeKicked {
+		trunk.LogInfo("AutoKick triggered. Kicking " + user)
 		for _, channel := range Config.Channels { // For each channel
 			KickUser(c, channel, user)
 		}

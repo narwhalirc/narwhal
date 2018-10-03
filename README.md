@@ -29,7 +29,7 @@ To be absolutely clear, Narwhal isn't remotely ready for use. Like I'm not even 
 
 ### General
 
-- [ ] Handle invites.
+- [x] Handle invites.
 - [ ] Separate out our "plugins" into their own modules that get loaded. Move Commands -> Plugins, have an "enabled" list.
 
 ### Plugin Related

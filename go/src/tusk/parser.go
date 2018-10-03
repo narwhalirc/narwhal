@@ -50,6 +50,7 @@ func init() {
 	}
 }
 
+// OnConnected will handle connection to an IRC network
 func OnConnected(c *girc.Client, e girc.Event) {
 	trunk.LogSuccess("Successfully connected to " + Config.Network + " as " + Config.User)
 	if len(Config.Channels) > 0 { // If we have channels set to join
@@ -60,6 +61,17 @@ func OnConnected(c *girc.Client, e girc.Event) {
 	}
 }
 
+// OnInvite will handle a request to invite an IRC channel
+func OnInvite(c *girc.Client, e girc.Event) {
+	channel := strings.TrimSpace(e.Trailing)
+	trunk.LogInfo("Received invite to " + channel + ". Joining.")
+	c.Cmd.Join(channel)
+
+	Config.Channels = append(Config.Channels, channel)
+	SaveConfig()
+}
+
+// Parser will handle the majority of incoming messages, user joins, etc.
 func Parser(c *girc.Client, e girc.Event) {
 	msg := strings.TrimSpace(e.Trailing)
 	user := e.Source.Name
@@ -83,8 +95,14 @@ func Parser(c *girc.Client, e girc.Event) {
 		var userInBlacklist bool
 
 		for _, blacklistUser := range fullBlacklist { // For each user
+			kickUserWithoutSuffix := strings.Replace(blacklistUser, "*", "", -1)
+
 			if user == blacklistUser { // If the user is in the blacklist
 				userInBlacklist = true
+				break
+			} else if strings.HasPrefix(user, kickUserWithoutSuffix) { // If the username begins with this kickUser
+				userInBlacklist = true
+				break
 			}
 		}
 
@@ -96,7 +114,6 @@ func Parser(c *girc.Client, e girc.Event) {
 			trunk.LogInfo("Allowed: " + user)
 			trunk.LogInfo("Received: " + msg)
 			trunk.LogInfo("Host: " + host)
-			trunk.LogInfo("Command: " + command)
 
 			if Config.Commands.Admin.Enabled { // Admin Management enabled
 				NarwhalAdminManager.Parse(c, e) // Run through management
