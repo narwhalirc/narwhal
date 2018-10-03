@@ -2,6 +2,10 @@
 
 Narwhal is a modern IRC bot written in Go.
 
+![Hex.pm](https://img.shields.io/badge/irc-%23narwhal--bot%20on%20freenode-green.svg)
+![Hex.pm](https://img.shields.io/badge/alpha-0.1-red.svg)
+![Hex.pm](https://img.shields.io/hexpm/l/plug.svg)
+
 ## Why
 
 Unlike most of the world, I spend every day engaging with communities I'm a part of via IRC. This has largely been side-by-side with our robot overlords, which have up until now been fairly limited in functionality.
