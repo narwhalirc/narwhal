@@ -11,13 +11,13 @@ So, I'm building Narwhal, our tusky robot animal overlord thing, to provide func
 Currently this functionality includes:
 
 - Admin / Op functionality
- - Channel-specific banning, kicking, unbanning, "unkicking". Note that Narwhal **must be an op for this**. It will try to op itself when joining a channel.
+  - Channel-specific banning, kicking, unbanning, "unkicking". Note that Narwhal **must be an op for this**. It will try to op itself when joining a channel.
 - Autokicking
- - Can automatically kick users on join or messages based on usernames and hosts, with some current limiting on globbing.
+  - Can automatically kick users on join or messages based on usernames and hosts, with some current limiting on globbing.
 - Blacklisting
- - Ignores requests to the bot by specific users. Supports basic globbing currently.
+  - Ignores requests to the bot by specific users. Supports basic globbing currently.
 - Song
- - Just spits out the "Narwhals Narwhals" song.
+  - Just spits out the "Narwhals Narwhals" song.
 
 ## Plans
 
