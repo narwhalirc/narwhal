@@ -19,16 +19,16 @@ Currently this functionality includes:
 - Song
  - Just spits out the "Narwhals Narwhals" song.
 
-### Plans
+## Plans
 
 To be absolutely clear, Narwhal isn't remotely ready for use. Like I'm not even going to give you documentation on building, that's how early it is.
 
-#### General
+### General
 
 - [ ] Handle invites.
 - [ ] Separate out our "plugins" into their own modules that get loaded. Move Commands -> Plugins, have an "enabled" list.
 
-#### Plugin Related
+### Plugin Related
 
 **Admin / Op functionality.**
 
@@ -40,7 +40,7 @@ To be absolutely clear, Narwhal isn't remotely ready for use. Like I'm not even 
 
 - [ ] Expand username-based kick to support regex.
 - [ ] Expand on message matching.
- - [ ] Should support sub-string matching and regex.
+  - [ ] Should support sub-string matching and regex.
 
 **URL Parser:**
 
