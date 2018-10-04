@@ -21,6 +21,8 @@ Currently this functionality includes:
   - Can automatically ban a user after they repeatedly rejoin after being kicked.
 - Blacklisting
   - Ignores requests to the bot by specific users. Supports basic globbing currently.
+- Slap
+ - Slaps the user or if itself, proclaims that it shall not.
 - Song
   - Just spits out the "Narwhals Narwhals" song.
 

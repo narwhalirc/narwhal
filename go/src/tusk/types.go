@@ -64,5 +64,6 @@ type NarwhalUsersConfig struct {
 type NarwhalPluginsConfig struct {
 	Admin    NarwhalAdminConfig
 	AutoKick NarwhalAutoKickerConfig
+	Slap     NarwhalSlapConfig
 	Song     NarwhalSongConfig
 }

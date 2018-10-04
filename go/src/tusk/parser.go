@@ -117,6 +117,10 @@ func Parser(c *girc.Client, e girc.Event) {
 			if Config.Plugins.Song.Enabled { // Song enabled
 				NarwhalSong.Parse(c, e, m) // Run through song
 			}
+
+			if Config.Plugins.Slap.Enabled { // Slap enabled
+				NarwhalSlap.Parse(c, e, m) // Run through slap
+			}
 		}
 	}
 }
