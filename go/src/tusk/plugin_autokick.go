@@ -42,15 +42,7 @@ type NarwhalAutoKickerPlugin struct {
 	Tracker map[string]int
 }
 
-func (autokicker *NarwhalAutoKickerPlugin) Parse(c *girc.Client, e girc.Event) {
-	msg := strings.TrimSpace(e.Trailing)
-	user := e.Source.Name
-	host := e.Source.Host
-
-	if user == "" { // User is somehow empty
-		user = e.Source.Ident // Change to using Ident
-	}
-
+func (autokicker *NarwhalAutoKickerPlugin) Parse(c *girc.Client, e girc.Event, m NarwhalMessage) {
 	var userShouldBeKicked bool
 
 	// #region Hosts Kick List Check
@@ -65,9 +57,9 @@ func (autokicker *NarwhalAutoKickerPlugin) Parse(c *girc.Client, e girc.Event) {
 					break
 				}
 			} else { // If we're looking for ident+host
-				userIdent := e.Source.Ident + "@" + host
+				userIdent := m.Issuer + "@" + m.Host
 
-				if userIdent == host { // If the user ident matches host
+				if userIdent == m.Host { // If the user ident matches host
 					userShouldBeKicked = true
 					break
 				}
@@ -82,7 +74,7 @@ func (autokicker *NarwhalAutoKickerPlugin) Parse(c *girc.Client, e girc.Event) {
 	if !userShouldBeKicked { // If we haven't yet determined to kick
 		if len(Config.Plugins.AutoKick.MessageMatches) > 0 { // If we have a Messages list
 			for _, match := range Config.Plugins.AutoKick.MessageMatches {
-				if msg == match { // If this is an exact match
+				if m.Message == match { // If this is an exact match
 					userShouldBeKicked = true
 					break
 				}
@@ -99,15 +91,15 @@ func (autokicker *NarwhalAutoKickerPlugin) Parse(c *girc.Client, e girc.Event) {
 			for _, kickUser := range Config.Plugins.AutoKick.Users {
 				if strings.HasSuffix(kickUser, "*") { // If we should not be doing exact match
 					kickUserWithoutSuffix := strings.Replace(kickUser, "*", "", -1)
-					if strings.HasPrefix(user, kickUserWithoutSuffix) { // If the username begins with this kickUser
+					if strings.HasPrefix(m.Issuer, kickUserWithoutSuffix) { // If the username begins with this kickUser
 						userShouldBeKicked = true
 						break
-					} else if user == kickUserWithoutSuffix { // Identical match
+					} else if m.Issuer == kickUserWithoutSuffix { // Identical match
 						userShouldBeKicked = true
 						break
 					}
 				} else { // If we should be doing an exact match
-					if user == kickUser { // If the user should be kicked
+					if m.Issuer == kickUser { // If the user should be kicked
 						userShouldBeKicked = true
 						break
 					}
@@ -119,12 +111,12 @@ func (autokicker *NarwhalAutoKickerPlugin) Parse(c *girc.Client, e girc.Event) {
 	// #endregion
 
 	if userShouldBeKicked {
-		trunk.LogInfo("AutoKick triggered. Kicking " + user)
+		trunk.LogInfo("AutoKick triggered. Kicking " + m.Issuer)
 		kickCount := 0
 
 		if Config.Plugins.AutoKick.EnabledAutoban { // If we've enabled autoban
 			var exists bool
-			kickCount, exists = autokicker.Tracker[user] // Get the current kickCount if it exists
+			kickCount, exists = autokicker.Tracker[m.Issuer] // Get the current kickCount if it exists
 
 			if exists {
 				kickCount++ // Increment the counter
@@ -132,14 +124,14 @@ func (autokicker *NarwhalAutoKickerPlugin) Parse(c *girc.Client, e girc.Event) {
 				kickCount = 1 // Set to 1
 			}
 
-			autokicker.Tracker[user] = kickCount // Update our tracker
+			autokicker.Tracker[m.Issuer] = kickCount // Update our tracker
 		}
 
 		for _, channel := range Config.Channels { // For each channel
-			KickUser(c, channel, user)
+			KickUser(c, channel, m.Issuer)
 
 			if Config.Plugins.AutoKick.EnabledAutoban && (kickCount > Config.Plugins.AutoKick.MinimumKickToBanCount) { // User has been kicked more than our minimum
-				BanUser(c, channel, user)
+				BanUser(c, channel, m.Issuer)
 			}
 		}
 	}

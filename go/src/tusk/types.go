@@ -40,13 +40,15 @@ type NarwhalConfig struct {
 type NarwhalMessage struct {
 	Channel string
 	Command string
+	Host    string
 	Issuer  string
+	Message string
 	Params  []string
 }
 
 // NarwhalPlugin is a plugin interface
 type NarwhalPlugin interface {
-	Parse(c *girc.Client, e girc.Event)
+	Parse(c *girc.Client, e girc.Event, m NarwhalMessage)
 }
 
 // NarwhalUsersConfig is our configuration for blacklisting users, administrative users, and autokicking

@@ -17,25 +17,19 @@ type NarwhalAdminConfig struct {
 // NarwhalAdminPlugin is our Admin plugin
 type NarwhalAdminPlugin struct{}
 
-func (adminmanager *NarwhalAdminPlugin) Parse(c *girc.Client, e girc.Event) {
+func (adminmanager *NarwhalAdminPlugin) Parse(c *girc.Client, e girc.Event, m NarwhalMessage) {
 	if len(Config.Users.Admins) > 0 { // If there are any admins set
 		var userIsAdmin bool
-		user := e.Source.Name
-
-		if user == "" { // User is somehow empty
-			user = e.Source.Ident // Change to using Ident
-		}
 
 		for _, admin := range Config.Users.Admins { // For each listed admin
-			if user == admin { // If this is a match
+			if m.Issuer == admin { // If this is a match
 				userIsAdmin = true
 				break
 			}
 		}
 
 		if userIsAdmin { // If the user issuing a command is an admin
-			narwhalMessage := ParseMessage(e)
-			adminmanager.CommandIssuer(c, narwhalMessage) // Pass along to our command issuer
+			adminmanager.CommandIssuer(c, m) // Pass along to our command issuer
 		}
 	}
 }

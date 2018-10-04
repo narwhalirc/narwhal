@@ -74,7 +74,9 @@ func ParseMessage(e girc.Event) NarwhalMessage {
 	return NarwhalMessage{
 		Channel: channel,
 		Command: command,
+		Host:    e.Source.Host,
 		Issuer:  user,
+		Message: e.Trailing,
 		Params:  params,
 	}
 }

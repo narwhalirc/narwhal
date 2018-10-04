@@ -73,13 +73,7 @@ func OnInvite(c *girc.Client, e girc.Event) {
 
 // Parser will handle the majority of incoming messages, user joins, etc.
 func Parser(c *girc.Client, e girc.Event) {
-	msg := strings.TrimSpace(e.Trailing)
-	user := e.Source.Name
-	host := e.Source.Host
-
-	if user == "" { // User is somehow empty
-		user = e.Source.Ident // Change to using Ident
-	}
+	m := ParseMessage(e)
 
 	var ignoreMessage bool
 	command := e.Command
@@ -97,31 +91,31 @@ func Parser(c *girc.Client, e girc.Event) {
 		for _, blacklistUser := range fullBlacklist { // For each user
 			kickUserWithoutSuffix := strings.Replace(blacklistUser, "*", "", -1)
 
-			if user == blacklistUser { // If the user is in the blacklist
+			if m.Issuer == blacklistUser { // If the user is in the blacklist
 				userInBlacklist = true
 				break
-			} else if strings.HasPrefix(user, kickUserWithoutSuffix) { // If the username begins with this kickUser
+			} else if strings.HasPrefix(m.Issuer, kickUserWithoutSuffix) { // If the username begins with this kickUser
 				userInBlacklist = true
 				break
 			}
 		}
 
 		if Config.Plugins.AutoKick.Enabled { // AutoKick enabled
-			NarwhalAutoKicker.Parse(c, e) // Run through auto-kicker first
+			NarwhalAutoKicker.Parse(c, e, m) // Run through auto-kicker first
 		}
 
 		if !userInBlacklist {
-			trunk.LogInfo("Allowed: " + user)
-			trunk.LogInfo("Received: " + msg)
-			trunk.LogInfo("Host: " + host)
-			trunk.LogInfo("Possible Channel: " + e.Params[0])
+			trunk.LogInfo("Allowed: " + m.Issuer)
+			trunk.LogInfo("Received: " + m.Message)
+			trunk.LogInfo("Host: " + m.Host)
+			trunk.LogInfo("Possible Channel: " + m.Channel)
 
 			if Config.Plugins.Admin.Enabled { // Admin Management enabled
-				NarwhalAdminManager.Parse(c, e) // Run through management
+				NarwhalAdminManager.Parse(c, e, m) // Run through management
 			}
 
 			if Config.Plugins.Song.Enabled { // Song enabled
-				NarwhalSong.Parse(c, e) // Run through song
+				NarwhalSong.Parse(c, e, m) // Run through song
 			}
 		}
 	}
