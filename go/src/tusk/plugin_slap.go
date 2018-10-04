@@ -40,6 +40,8 @@ func init() {
 		"slaps $USER",
 		"thinks $USER should lose a few pounds",
 		"throws $USER down a ravine",
+		"offers $USER some Tapio viina",
+		"thinks $USER has a rhyming disease",
 	}
 
 	if len(Config.Plugins.Slap.CustomActions) > 0 { // Has items
