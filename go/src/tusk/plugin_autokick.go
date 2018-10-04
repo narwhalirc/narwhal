@@ -21,7 +21,7 @@ type NarwhalAutoKickerConfig struct {
 	Enabled bool
 
 	// EnabledAutoban determines whether to enable the automatic banning of users which exceed our MinimumKickToBanCount
-	EnabledAutoban bool
+	EnabledAutoban bool `json:",omitempty"`
 
 	// Hosts to kick. Matches from end.
 	Hosts []string
@@ -30,7 +30,7 @@ type NarwhalAutoKickerConfig struct {
 	MessageMatches []string
 
 	// MinimumKickToBanCount is a minimum amount of times a user should be kicked before being automatically banned. Only enforced when EnabledAutoban is set
-	MinimumKickToBanCount int
+	MinimumKickToBanCount int `json:",omitempty"`
 
 	// Users to kick. Matches from beginning.
 	Users []string
@@ -166,14 +166,12 @@ func (autokicker *NarwhalAutoKickerPlugin) RemoveUsers(users []string) {
 	for _, user := range Config.Plugins.AutoKick.Users { // For each user in Users
 		for _, userToRemove := range users { // Users we're wanting to remove
 			if userToRemove == user { // If this blacklist user matches the user we're wanting to remove
-				trunk.LogWarn("Match user: " + userToRemove + " by " + user)
 				usersList[userToRemove] = true // Should remove the user
 				break
 			}
 		}
 
 		if _, exists := usersList[user]; !exists { // User shouldn't be removed
-			trunk.LogWarn("Should not remove user, therefore appending: " + user)
 			newUsers = append(newUsers, user)
 		}
 	}
