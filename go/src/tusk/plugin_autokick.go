@@ -20,8 +20,8 @@ type NarwhalAutoKickerConfig struct {
 	// Enabled determines whether to enable this functionality
 	Enabled bool
 
-	// EnableAutoban determines whether to enable the automatic banning of users which exceed our MinimumKickToBanCount
-	EnableAutoban bool
+	// EnabledAutoban determines whether to enable the automatic banning of users which exceed our MinimumKickToBanCount
+	EnabledAutoban bool
 
 	// Hosts to kick. Matches from end.
 	Hosts []string
@@ -29,7 +29,7 @@ type NarwhalAutoKickerConfig struct {
 	// MessageMatches is a list of messages that will result in kicks
 	MessageMatches []string
 
-	// MinimumKickToBanCount is a minimum amount of times a user should be kicked before being automatically banned. Only enforced when EnableAutoban is set
+	// MinimumKickToBanCount is a minimum amount of times a user should be kicked before being automatically banned. Only enforced when EnabledAutoban is set
 	MinimumKickToBanCount int
 
 	// Users to kick. Matches from beginning.
@@ -120,21 +120,25 @@ func (autokicker *NarwhalAutoKickerPlugin) Parse(c *girc.Client, e girc.Event) {
 
 	if userShouldBeKicked {
 		trunk.LogInfo("AutoKick triggered. Kicking " + user)
+		kickCount := 0
 
-		kickCount, exists := autokicker.Tracker[user] // Get the current kickCount if it exists
+		if Config.Plugins.AutoKick.EnabledAutoban { // If we've enabled autoban
+			var exists bool
+			kickCount, exists = autokicker.Tracker[user] // Get the current kickCount if it exists
 
-		if exists {
-			kickCount++ // Increment the counter
-		} else {
-			kickCount = 1 // Set to 1
+			if exists {
+				kickCount++ // Increment the counter
+			} else {
+				kickCount = 1 // Set to 1
+			}
+
+			autokicker.Tracker[user] = kickCount // Update our tracker
 		}
-
-		autokicker.Tracker[user] = kickCount // Update our tracker
 
 		for _, channel := range Config.Channels { // For each channel
 			KickUser(c, channel, user)
 
-			if kickCount > Config.Plugins.AutoKick.MinimumKickToBanCount { // User has been kicked more than our minimum
+			if Config.Plugins.AutoKick.EnabledAutoban && (kickCount > Config.Plugins.AutoKick.MinimumKickToBanCount) { // User has been kicked more than our minimum
 				BanUser(c, channel, user)
 			}
 		}
