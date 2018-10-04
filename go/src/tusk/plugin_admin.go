@@ -8,11 +8,14 @@ import (
 // NarwhalAdminManager is our admin management plugin
 var NarwhalAdminManager NarwhalAdminPlugin
 
-// NarwhalAdminPlugin is our configuration for the Narwhal admin plugin
-type NarwhalAdminPlugin struct {
+// NarwhalAdminConfig is our configuration for the Narwhal admin plugin
+type NarwhalAdminConfig struct {
 	// Enabled determines whether to enable this functionality
 	Enabled bool
 }
+
+// NarwhalAdminPlugin is our Admin plugin
+type NarwhalAdminPlugin struct{}
 
 func (adminmanager *NarwhalAdminPlugin) Parse(c *girc.Client, e girc.Event) {
 	if len(Config.Users.Admins) > 0 { // If there are any admins set

@@ -84,5 +84,9 @@ func SetDefaults(config NarwhalConfig) NarwhalConfig {
 		config.Port = 6667 // Default to 6667
 	}
 
+	if config.Plugins.AutoKick.MinimumKickToBanCount <= 0 { // Not a reasonable amount (if you want to immediately ban someone, use the ban function)
+		config.Plugins.AutoKick.MinimumKickToBanCount = 3
+	}
+
 	return config
 }

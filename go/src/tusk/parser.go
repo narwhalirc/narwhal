@@ -106,7 +106,7 @@ func Parser(c *girc.Client, e girc.Event) {
 			}
 		}
 
-		if Config.Commands.AutoKick.Enabled { // AutoKick enabled
+		if Config.Plugins.AutoKick.Enabled { // AutoKick enabled
 			NarwhalAutoKicker.Parse(c, e) // Run through auto-kicker first
 		}
 
@@ -115,11 +115,11 @@ func Parser(c *girc.Client, e girc.Event) {
 			trunk.LogInfo("Received: " + msg)
 			trunk.LogInfo("Host: " + host)
 
-			if Config.Commands.Admin.Enabled { // Admin Management enabled
+			if Config.Plugins.Admin.Enabled { // Admin Management enabled
 				NarwhalAdminManager.Parse(c, e) // Run through management
 			}
 
-			if Config.Commands.Song.Enabled { // Song enabled
+			if Config.Plugins.Song.Enabled { // Song enabled
 				NarwhalSong.Parse(c, e) // Run through song
 			}
 		}

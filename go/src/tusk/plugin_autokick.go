@@ -9,10 +9,19 @@ import (
 // NarwhalAutoKicker is our autokicker plugin
 var NarwhalAutoKicker NarwhalAutoKickerPlugin
 
+func init() {
+	NarwhalAutoKicker = NarwhalAutoKickerPlugin{
+		Tracker: make(map[string]int),
+	}
+}
+
 // NarwhallAutoKickerConfig is our configuration for the Narwhal autokicker
 type NarwhalAutoKickerConfig struct {
 	// Enabled determines whether to enable this functionality
 	Enabled bool
+
+	// EnableAutoban determines whether to enable the automatic banning of users which exceed our MinimumKickToBanCount
+	EnableAutoban bool
 
 	// Hosts to kick. Matches from end.
 	Hosts []string
@@ -20,12 +29,18 @@ type NarwhalAutoKickerConfig struct {
 	// MessageMatches is a list of messages that will result in kicks
 	MessageMatches []string
 
+	// MinimumKickToBanCount is a minimum amount of times a user should be kicked before being automatically banned. Only enforced when EnableAutoban is set
+	MinimumKickToBanCount int
+
 	// Users to kick. Matches from beginning.
 	Users []string
 }
 
 // NarwhalAutoKickerPlugin is our Autokick plugin
-type NarwhalAutoKickerPlugin struct{}
+type NarwhalAutoKickerPlugin struct {
+	// Tracker is a map of usernames to the amount of times they've been kicked
+	Tracker map[string]int
+}
 
 func (autokicker *NarwhalAutoKickerPlugin) Parse(c *girc.Client, e girc.Event) {
 	msg := strings.TrimSpace(e.Trailing)
@@ -40,8 +55,8 @@ func (autokicker *NarwhalAutoKickerPlugin) Parse(c *girc.Client, e girc.Event) {
 
 	// #region Hosts Kick List Check
 
-	if len(Config.Commands.AutoKick.Hosts) > 0 { // If we have a Hosts list
-		for _, kickHost := range Config.Commands.AutoKick.Hosts {
+	if len(Config.Plugins.AutoKick.Hosts) > 0 { // If we have a Hosts list
+		for _, kickHost := range Config.Plugins.AutoKick.Hosts {
 			if strings.HasPrefix(kickHost, "*!*@") { // If we're checking for any username with this host
 				reducedHost := strings.Replace(kickHost, "*!*@", "", -1)
 
@@ -65,8 +80,8 @@ func (autokicker *NarwhalAutoKickerPlugin) Parse(c *girc.Client, e girc.Event) {
 	// #region Message Matching
 
 	if !userShouldBeKicked { // If we haven't yet determined to kick
-		if len(Config.Commands.AutoKick.MessageMatches) > 0 { // If we have a Messages list
-			for _, match := range Config.Commands.AutoKick.MessageMatches {
+		if len(Config.Plugins.AutoKick.MessageMatches) > 0 { // If we have a Messages list
+			for _, match := range Config.Plugins.AutoKick.MessageMatches {
 				if msg == match { // If this is an exact match
 					userShouldBeKicked = true
 					break
@@ -80,8 +95,8 @@ func (autokicker *NarwhalAutoKickerPlugin) Parse(c *girc.Client, e girc.Event) {
 	// #region Users Kick List Check
 
 	if !userShouldBeKicked { // If we haven't yet determined to kick
-		if len(Config.Commands.AutoKick.Users) > 0 { // If we have a Kick list
-			for _, kickUser := range Config.Commands.AutoKick.Users {
+		if len(Config.Plugins.AutoKick.Users) > 0 { // If we have a Kick list
+			for _, kickUser := range Config.Plugins.AutoKick.Users {
 				if strings.HasSuffix(kickUser, "*") { // If we should not be doing exact match
 					kickUserWithoutSuffix := strings.Replace(kickUser, "*", "", -1)
 					if strings.HasPrefix(user, kickUserWithoutSuffix) { // If the username begins with this kickUser
@@ -105,8 +120,23 @@ func (autokicker *NarwhalAutoKickerPlugin) Parse(c *girc.Client, e girc.Event) {
 
 	if userShouldBeKicked {
 		trunk.LogInfo("AutoKick triggered. Kicking " + user)
+
+		kickCount, exists := autokicker.Tracker[user] // Get the current kickCount if it exists
+
+		if exists {
+			kickCount++ // Increment the counter
+		} else {
+			kickCount = 1 // Set to 1
+		}
+
+		autokicker.Tracker[user] = kickCount // Update our tracker
+
 		for _, channel := range Config.Channels { // For each channel
 			KickUser(c, channel, user)
+
+			if kickCount > Config.Plugins.AutoKick.MinimumKickToBanCount { // User has been kicked more than our minimum
+				BanUser(c, channel, user)
+			}
 		}
 	}
 }
@@ -114,10 +144,10 @@ func (autokicker *NarwhalAutoKickerPlugin) Parse(c *girc.Client, e girc.Event) {
 // AddUsers will add the specified users to the AutoKick Users list, if they aren't already added
 func (autokicker *NarwhalAutoKickerPlugin) AddUsers(users []string) {
 	for _, requestedAddUser := range users {
-		Config.Commands.AutoKick.Users = append(Config.Commands.AutoKick.Users, requestedAddUser)
+		Config.Plugins.AutoKick.Users = append(Config.Plugins.AutoKick.Users, requestedAddUser)
 	}
 
-	Config.Commands.AutoKick.Users = DeduplicateList(Config.Commands.AutoKick.Users) // Deduplicate users and set to AutoKick Users
+	Config.Plugins.AutoKick.Users = DeduplicateList(Config.Plugins.AutoKick.Users) // Deduplicate users and set to AutoKick Users
 
 	if saveErr := SaveConfig(); saveErr != nil {
 		trunk.LogWarn("Failed to update the configuration: " + saveErr.Error())
@@ -129,7 +159,7 @@ func (autokicker *NarwhalAutoKickerPlugin) RemoveUsers(users []string) {
 	var usersList = make(map[string]bool) // Map of users and their add / remove state
 	newUsers := []string{}                // Users to retain
 
-	for _, user := range Config.Commands.AutoKick.Users { // For each user in Users
+	for _, user := range Config.Plugins.AutoKick.Users { // For each user in Users
 		for _, userToRemove := range users { // Users we're wanting to remove
 			if userToRemove == user { // If this blacklist user matches the user we're wanting to remove
 				trunk.LogWarn("Match user: " + userToRemove + " by " + user)
@@ -144,7 +174,7 @@ func (autokicker *NarwhalAutoKickerPlugin) RemoveUsers(users []string) {
 		}
 	}
 
-	Config.Commands.AutoKick.Users = DeduplicateList(newUsers) // Deduplicate users and set to AutoKick Users
+	Config.Plugins.AutoKick.Users = DeduplicateList(newUsers) // Deduplicate users and set to AutoKick Users
 
 	if saveErr := SaveConfig(); saveErr != nil {
 		trunk.LogWarn("Failed to update the configuration: " + saveErr.Error())

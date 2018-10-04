@@ -26,8 +26,8 @@ type NarwhalConfig struct {
 	// Password is the IRC bot password for authentication
 	Password string
 
-	// Commands is a list of command configurations
-	Commands NarwhalCommandsConfig `toml:"Commands,omitempty"`
+	// Plugins is a list of plugin configurations
+	Plugins NarwhalPluginsConfig `toml:"Plugins,omitempty"`
 
 	// Channels is a list of channels to join
 	Channels []string
@@ -53,13 +53,13 @@ type NarwhalUsersConfig struct {
 	// Admins is an array of users authorized to perform admin actions
 	Admins []string
 
-	// Blacklist is an array of users blacklisted from performing commands
+	// Blacklist is an array of users blacklisted from performing Plugins
 	Blacklist []string
 }
 
-// NarwhalCommandsConfig is a list of command configurations
-type NarwhalCommandsConfig struct {
-	Admin    NarwhalAdminPlugin
+// NarwhalPluginsConfig is a list of command configurations
+type NarwhalPluginsConfig struct {
+	Admin    NarwhalAdminConfig
 	AutoKick NarwhalAutoKickerConfig
 	Song     NarwhalSongConfig
 }
