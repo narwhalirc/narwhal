@@ -22,7 +22,7 @@ Currently this functionality includes:
 - Blacklisting
   - Ignores requests to the bot by specific users. Supports basic globbing currently.
 - Slap
- - Slaps the user or if itself, proclaims that it shall not.
+  - Slaps the user or if itself, proclaims that it shall not.
 - Song
   - Just spits out the "Narwhals Narwhals" song.
 
