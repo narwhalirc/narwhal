@@ -114,6 +114,7 @@ func Parser(c *girc.Client, e girc.Event) {
 			trunk.LogInfo("Allowed: " + user)
 			trunk.LogInfo("Received: " + msg)
 			trunk.LogInfo("Host: " + host)
+			trunk.LogInfo("Possible Channel: " + e.Params[0])
 
 			if Config.Plugins.Admin.Enabled { // Admin Management enabled
 				NarwhalAdminManager.Parse(c, e) // Run through management

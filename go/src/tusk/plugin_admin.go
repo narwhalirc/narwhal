@@ -34,16 +34,17 @@ func (adminmanager *NarwhalAdminPlugin) Parse(c *girc.Client, e girc.Event) {
 		}
 
 		if userIsAdmin { // If the user issuing a command is an admin
-			narwhalMessage := ParseMessage(user, strings.TrimSpace(e.Trailing))
-			adminmanager.CommandIssuer(c, e, narwhalMessage) // Pass along to our command issuer
+			narwhalMessage := ParseMessage(e)
+			adminmanager.CommandIssuer(c, narwhalMessage) // Pass along to our command issuer
 		}
 	}
 }
 
 // CommandIssuer is our primary function for command and param handling
-func (adminmanager *NarwhalAdminPlugin) CommandIssuer(c *girc.Client, e girc.Event, narwhalMessage NarwhalMessage) {
-	cmd := narwhalMessage.Command
-	params := narwhalMessage.Params
+func (adminmanager *NarwhalAdminPlugin) CommandIssuer(c *girc.Client, m NarwhalMessage) {
+	eventChannel := m.Channel
+	cmd := m.Command
+	params := m.Params
 	hasGlobal := strings.HasPrefix(cmd, "global")
 
 	// #region Global commands (not channel specific)
@@ -52,13 +53,11 @@ func (adminmanager *NarwhalAdminPlugin) CommandIssuer(c *girc.Client, e girc.Eve
 		nonGlobalCommand := strings.Replace(cmd, "global", "", -1) // Get the non-global equivelant for when we do per-user action across multiple channels
 
 		for _, channel := range Config.Channels { // For each channel the bot is in
-			specifiedKickParams := []string{channel}
-			specifiedKickParams = append(specifiedKickParams, params...)
-
-			adminmanager.CommandIssuer(c, e, NarwhalMessage{ // Issue a non-global command against this user for this specific command
+			adminmanager.CommandIssuer(c, NarwhalMessage{ // Issue a non-global command against this user for this specific command
+				Channel: channel, // Change our channel to this one
 				Command: nonGlobalCommand,
-				Issuer:  narwhalMessage.Issuer,
-				Params:  specifiedKickParams,
+				Issuer:  m.Issuer,
+				Params:  m.Params,
 			})
 		}
 	}
@@ -68,31 +67,26 @@ func (adminmanager *NarwhalAdminPlugin) CommandIssuer(c *girc.Client, e girc.Eve
 	// #region Channel-specific commands
 
 	if !hasGlobal {
-		if len(params) == 1 {
-			c.Cmd.ReplyTo(e, "You must pass a #channel with this command.")
-		} else if len(params) > 1 { // Multiple params
-			channel := params[:1][0] // Designate the first argument as the channel
-			users := params[1:]      // Designate all arguments after as users
+		switch cmd {
+		case "ban": // Ban
+			KickUsers(c, eventChannel, params) // Kick the users before issuing ban
+			NarwhalAutoKicker.AddUsers(params) // Add the users to Autokick
+			BanUsers(c, eventChannel, params)  // Ban the users
+			break
+		case "kick": // Kick
+			KickUsers(c, eventChannel, params) // Kick the users
+			NarwhalAutoKicker.AddUsers(params) // Add the users to Autokick
+			break
+		case "unban": // Unban
+			NarwhalAutoKicker.RemoveUsers(params) // Remove the users from Autokick
+			UnbanUsers(c, eventChannel, params)   // Unban the users
+			break
+		case "unkick": // Unkick
+			NarwhalAutoKicker.RemoveUsers(params) // Remove the users from Autokick
+			break
+		case "welcome": // Welcome message
 
-			switch cmd {
-			case "ban": // Ban
-				KickUsers(c, channel, users)      // Kick the users before issuing ban
-				NarwhalAutoKicker.AddUsers(users) // Add the users to Autokick
-				BanUsers(c, channel, users)       // Ban the users
-				break
-			case "kick": // Kick
-				KickUsers(c, channel, users)      // Kick the users
-				NarwhalAutoKicker.AddUsers(users) // Add the users to Autokick
-				break
-			case "unban": // Unban
-				NarwhalAutoKicker.RemoveUsers(users) // Remove the users from Autokick
-				UnbanUsers(c, channel, users)        // Unban the users
-				break
-			case "unkick": // Unkick
-				NarwhalAutoKicker.RemoveUsers(users) // Remove the users from Autokick
-				break
-			default:
-			}
+		default:
 		}
 	}
 

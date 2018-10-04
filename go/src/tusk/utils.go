@@ -48,17 +48,31 @@ func KickUsers(c *girc.Client, channel string, users []string) {
 	}
 }
 
-// ParseMessage will parse a string message and return a NarwhalMessage
-func ParseMessage(user, msg string) NarwhalMessage {
-	msgSplit := strings.Split(msg, " ")
-	command := strings.Replace(msgSplit[:1][0], ".", "", -1)
+// ParseMessage will parse an event and return a NarwhalMessage
+func ParseMessage(e girc.Event) NarwhalMessage {
+	var channel string
+	var command string
 	var params []string
+	user := e.Source.Name
+
+	if user == "" { // User is somehow empty
+		user = e.Source.Ident // Change to using Ident
+	}
+
+	if e.IsFromChannel() { // If this is from a channel
+		channel = e.Params[0] // Channel is first param
+	}
+
+	message := strings.TrimSpace(e.Trailing)
+	msgSplit := strings.Split(message, " ")                 // Split on whitespace
+	command = strings.Replace(msgSplit[:1][0], ".", "", -1) // Get the first item, remove .
 
 	if len(msgSplit) > 1 {
 		params = msgSplit[1:]
 	}
 
 	return NarwhalMessage{
+		Channel: channel,
 		Command: command,
 		Issuer:  user,
 		Params:  params,

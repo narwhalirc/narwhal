@@ -38,6 +38,7 @@ type NarwhalConfig struct {
 
 // NarwhalMessage is a custom message
 type NarwhalMessage struct {
+	Channel string
 	Command string
 	Issuer  string
 	Params  []string
