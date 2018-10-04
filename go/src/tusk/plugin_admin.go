@@ -29,13 +29,13 @@ func (adminmanager *NarwhalAdminPlugin) Parse(c *girc.Client, e girc.Event, m Na
 		}
 
 		if userIsAdmin { // If the user issuing a command is an admin
-			adminmanager.CommandIssuer(c, m) // Pass along to our command issuer
+			adminmanager.CommandIssuer(c, e, m) // Pass along to our command issuer
 		}
 	}
 }
 
 // CommandIssuer is our primary function for command and param handling
-func (adminmanager *NarwhalAdminPlugin) CommandIssuer(c *girc.Client, m NarwhalMessage) {
+func (adminmanager *NarwhalAdminPlugin) CommandIssuer(c *girc.Client, e girc.Event, m NarwhalMessage) {
 	eventChannel := m.Channel
 	cmd := m.Command
 	params := m.Params
@@ -47,7 +47,7 @@ func (adminmanager *NarwhalAdminPlugin) CommandIssuer(c *girc.Client, m NarwhalM
 		nonGlobalCommand := strings.Replace(cmd, "global", "", -1) // Get the non-global equivelant for when we do per-user action across multiple channels
 
 		for _, channel := range Config.Channels { // For each channel the bot is in
-			adminmanager.CommandIssuer(c, NarwhalMessage{ // Issue a non-global command against this user for this specific command
+			adminmanager.CommandIssuer(c, e, NarwhalMessage{ // Issue a non-global command against this user for this specific command
 				Channel: channel, // Change our channel to this one
 				Command: nonGlobalCommand,
 				Issuer:  m.Issuer,
@@ -71,6 +71,11 @@ func (adminmanager *NarwhalAdminPlugin) CommandIssuer(c *girc.Client, m NarwhalM
 			KickUsers(c, eventChannel, params) // Kick the users
 			NarwhalAutoKicker.AddUsers(params) // Add the users to Autokick
 			break
+		case "proclaim": // Proclamation
+			proclamationMessage := "Behold, I am your robot narwhal overlord. Bow before me, puny hoooomans, or I shall unleash source code upon you."
+			c.Cmd.Reply(e, proclamationMessage)
+			c.Cmd.Action(m.Channel, "means to say to visit https://github.com/JoshStrobl/narwhal")
+			break
 		case "unban": // Unban
 			NarwhalAutoKicker.RemoveUsers(params) // Remove the users from Autokick
 			UnbanUsers(c, eventChannel, params)   // Unban the users
@@ -78,8 +83,6 @@ func (adminmanager *NarwhalAdminPlugin) CommandIssuer(c *girc.Client, m NarwhalM
 		case "unkick": // Unkick
 			NarwhalAutoKicker.RemoveUsers(params) // Remove the users from Autokick
 			break
-		case "welcome": // Welcome message
-
 		default:
 		}
 	}
