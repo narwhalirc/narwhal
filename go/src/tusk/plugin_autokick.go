@@ -166,7 +166,8 @@ func (autokicker *NarwhalAutoKickerPlugin) RemoveUsers(users []string) {
 	for _, user := range Config.Plugins.AutoKick.Users { // For each user in Users
 		for _, userToRemove := range users { // Users we're wanting to remove
 			if userToRemove == user { // If this blacklist user matches the user we're wanting to remove
-				usersList[userToRemove] = true // Should remove the user
+				usersList[userToRemove] = true   // Should remove the user
+				delete(autokicker.Tracker, user) // Delete user from Tracker
 				break
 			}
 		}
