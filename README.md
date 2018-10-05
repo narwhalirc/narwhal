@@ -16,8 +16,11 @@ Currently this functionality includes:
 
 - Admin / Op functionality
   - Channel-specific banning, kicking, unbanning, "unkicking". Note that Narwhal **must be an op for this**. It will try to op itself when joining a channel.
+  - Add / remove messages from AutoKick MessageMatches list.
+  - Add / remove users from AutoKick list.
 - Autokicking
-  - Can automatically kick users on join or messages based on usernames and hosts, with some current limiting on globbing.
+  - Can automatically kick users on join or messages based on usernames and hosts, with support for basic globbing as well as regex.
+  - Can automatically kick a user based on a message. Supports exact message matching, basic globbing, and regex.
   - Can automatically ban a user after they repeatedly rejoin after being kicked.
 - Blacklisting
   - Ignores requests to the bot by specific users. Supports basic globbing currently.
@@ -45,9 +48,9 @@ To be absolutely clear, Narwhal isn't remotely ready for use. Like I'm not even 
 
 **Autokicker:**
 
-- [ ] Expand username-based kick to support regex.
-- [ ] Expand on message matching.
-  - [ ] Should support sub-string matching and regex.
+- [x] Expand username-based kick to support regex.
+- [x] Expand on message matching.
+  - [x] Should support sub-string matching and regex.
 
 **URL Parser:**
 
