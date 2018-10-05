@@ -62,12 +62,14 @@ func (adminmanager *NarwhalAdminPlugin) CommandIssuer(c *girc.Client, e girc.Eve
 
 	if !hasGlobal {
 		switch cmd {
+		case "addhost": // Add Host to AutoKick Hosts
+			NarwhalAutoKicker.AddHost(m.MessageNoCmd) // Add the host
+			break
 		case "addkicker": // Add Kicker without kick attempt
 			NarwhalAutoKicker.AddUsers(params) // Add the users to Autokick
 			break
 		case "addmsg": // Add Message to our MessageMatches
-			msg := strings.Replace(m.Message, "."+m.Command, " ", -1) // Remove command from our whole message to get entire message to add
-			NarwhalAutoKicker.AddMessage(msg)                         // Add the message to Autokick MessageMatches
+			NarwhalAutoKicker.AddMessage(m.MessageNoCmd) // Add the message to Autokick MessageMatches
 			break
 		case "ban": // Ban
 			KickUsers(c, eventChannel, params) // Kick the users before issuing ban
@@ -83,9 +85,11 @@ func (adminmanager *NarwhalAdminPlugin) CommandIssuer(c *girc.Client, e girc.Eve
 			c.Cmd.Reply(e, proclamationMessage)
 			c.Cmd.Action(m.Channel, "means to say to visit https://github.com/JoshStrobl/narwhal")
 			break
+		case "removehost": // Remove Host from AutoKick Hosts
+			NarwhalAutoKicker.RemoveHost(m.MessageNoCmd) // Remove the host
+			break
 		case "removemsg": // Remove Message from our MessageMatches
-			msg := strings.Replace(m.Message, "."+m.Command, " ", -1) // Remove command from our whole message to get entire message to add
-			NarwhalAutoKicker.RemoveMessage(msg)                      // Remove the message from Autokick MessageMatches
+			NarwhalAutoKicker.RemoveMessage(m.MessageNoCmd) // Remove the message from Autokick MessageMatches
 			break
 		case "unban": // Unban
 			NarwhalAutoKicker.RemoveUsers(params) // Remove the users from Autokick

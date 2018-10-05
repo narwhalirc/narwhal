@@ -12,23 +12,10 @@ var adminCommands []string
 // fixedIgnoreUsers is a list of users we'll ignore messages from no matter what
 var fixedIgnoreUsers []string
 
-// fullBlacklist is the combined list of fixedIgnoreUsers and configured blacklist
-var fullBlacklist []string
-
 // ignoreCommands is a list of numerical command codes to ignore
 var ignoreCommands []string
 
 func init() {
-	fixedIgnoreUsers = []string{
-		"freenode-connect",
-	}
-
-	fullBlacklist = fixedIgnoreUsers
-
-	if len(Config.Users.Blacklist) > 0 { // If there are items in our blacklist
-		fullBlacklist = append(fullBlacklist, Config.Users.Blacklist...)
-	}
-
 	ignoreCommands = []string{
 		"002", // RPL_YOURHOST
 		"003", // RPL_CREATED
@@ -88,7 +75,7 @@ func Parser(c *girc.Client, e girc.Event) {
 	if !ignoreMessage {
 		var userInBlacklist bool
 
-		for _, blacklistUser := range fullBlacklist { // For each user
+		for _, blacklistUser := range Config.Users.Blacklist { // For each user
 			userInBlacklist = Matches(blacklistUser, m.Issuer) // Check against our matcher
 
 			if userInBlacklist {

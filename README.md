@@ -43,8 +43,8 @@ To be absolutely clear, Narwhal isn't remotely ready for use. Like I'm not even 
 **Admin / Op functionality.**
 
 - [ ] Ability to add / remove users via IRC (must be an existing admin) for:
- - [ ] Admin abilities
- - [ ] Blacklist
+  - [ ] Admin abilities
+  - [ ] Blacklist
 
 **Autokicker:**
 
@@ -55,8 +55,8 @@ To be absolutely clear, Narwhal isn't remotely ready for use. Like I'm not even 
 **URL Parser:**
 
 - [ ] Implement URL parsing in messages. Beyond titles, it should specially handle:
- - [ ] Reddit: Present upvotes and downvotes
- - [ ] Youtube: Present mobile and non-mobile links.
+  - [ ] Reddit: Present upvotes and downvotes
+  - [ ] Youtube: Present mobile and non-mobile links.
 
 ## License
 

@@ -38,12 +38,13 @@ type NarwhalConfig struct {
 
 // NarwhalMessage is a custom message
 type NarwhalMessage struct {
-	Channel string
-	Command string
-	Host    string
-	Issuer  string
-	Message string
-	Params  []string
+	Channel      string
+	Command      string
+	Host         string
+	Issuer       string
+	Message      string
+	MessageNoCmd string
+	Params       []string
 }
 
 // NarwhalPlugin is a plugin interface

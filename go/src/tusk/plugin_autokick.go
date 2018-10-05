@@ -128,9 +128,15 @@ func (autokicker *NarwhalAutoKickerPlugin) Parse(c *girc.Client, e girc.Event, m
 	}
 }
 
+// AddHost will add the specified host to the AutoKick Hosts list, if they aren't already added
+func (autokicker *NarwhalAutoKickerPlugin) AddHost(host string) {
+	Config.Plugins.AutoKick.Hosts = append(Config.Plugins.AutoKick.Hosts, host)
+	Config.Plugins.AutoKick.Hosts = DeduplicateList(Config.Plugins.AutoKick.Hosts)
+	SaveConfig()
+}
+
 // AddMessage will add the specified message to the AutoKick MessageMatches list, if they aren't already added
 func (autokicker *NarwhalAutoKickerPlugin) AddMessage(message string) {
-	message = strings.TrimSpace(message)
 	Config.Plugins.AutoKick.MessageMatches = append(Config.Plugins.AutoKick.MessageMatches, message) // Add the msg
 	Config.Plugins.AutoKick.MessageMatches = DeduplicateList(Config.Plugins.AutoKick.MessageMatches) // Deduplicate messages and set to MessageMatches
 	SaveConfig()
@@ -143,6 +149,14 @@ func (autokicker *NarwhalAutoKickerPlugin) AddUsers(users []string) {
 	}
 
 	Config.Plugins.AutoKick.Users = DeduplicateList(Config.Plugins.AutoKick.Users) // Deduplicate users and set to AutoKick Users
+	SaveConfig()
+}
+
+// RemoveHost will remove the specified host from the AutoKick Hosts list, if they are added
+func (autokicker *NarwhalAutoKickerPlugin) RemoveHost(host string) {
+	hosts := []string{host}
+	Config.Plugins.AutoKick.Hosts = RemoveFromStringArr(Config.Plugins.AutoKick.Hosts, hosts)
+	Config.Plugins.AutoKick.Hosts = DeduplicateList(Config.Plugins.AutoKick.Hosts)
 	SaveConfig()
 }
 
