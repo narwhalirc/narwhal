@@ -74,8 +74,9 @@ func (autokicker *NarwhalAutoKickerPlugin) Parse(c *girc.Client, e girc.Event, m
 	if !userShouldBeKicked { // If we haven't yet determined to kick
 		if len(Config.Plugins.AutoKick.MessageMatches) > 0 { // If we have a Messages list
 			for _, match := range Config.Plugins.AutoKick.MessageMatches {
-				if m.Message == match { // If this is an exact match
-					userShouldBeKicked = true
+				userShouldBeKicked = Matches(match, m.Message) // Check if string matches our requirements
+
+				if userShouldBeKicked {
 					break
 				}
 			}
@@ -89,20 +90,10 @@ func (autokicker *NarwhalAutoKickerPlugin) Parse(c *girc.Client, e girc.Event, m
 	if !userShouldBeKicked { // If we haven't yet determined to kick
 		if len(Config.Plugins.AutoKick.Users) > 0 { // If we have a Kick list
 			for _, kickUser := range Config.Plugins.AutoKick.Users {
-				if strings.HasSuffix(kickUser, "*") { // If we should not be doing exact match
-					kickUserWithoutSuffix := strings.Replace(kickUser, "*", "", -1)
-					if strings.HasPrefix(m.Issuer, kickUserWithoutSuffix) { // If the username begins with this kickUser
-						userShouldBeKicked = true
-						break
-					} else if m.Issuer == kickUserWithoutSuffix { // Identical match
-						userShouldBeKicked = true
-						break
-					}
-				} else { // If we should be doing an exact match
-					if m.Issuer == kickUser { // If the user should be kicked
-						userShouldBeKicked = true
-						break
-					}
+				userShouldBeKicked = Matches(kickUser, m.Issuer) // Check if string matches our requirements
+
+				if userShouldBeKicked {
+					break
 				}
 			}
 		}

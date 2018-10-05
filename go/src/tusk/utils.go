@@ -2,6 +2,7 @@ package tusk
 
 import (
 	"github.com/lrstanley/girc"
+	"regexp"
 	"sort"
 	"strings"
 )
@@ -46,6 +47,46 @@ func KickUsers(c *girc.Client, channel string, users []string) {
 	for _, user := range users { // For each user
 		KickUser(c, channel, user) // Issue a KickUser
 	}
+}
+
+// Matches is our string match function that checks our provided string against a requirement
+// Such requirement can be basic globbing, regex, or exact match.
+func Matches(requirement string, checking string) bool {
+	var matches bool
+	matchFromEnd := strings.HasPrefix(requirement, "*")       // Check if we're globbing from the start
+	matchFromBeginning := strings.HasSuffix(requirement, "*") // Check if we're globbing at the end
+	hasReg := strings.HasPrefix(requirement, "re:")           // Check if this is a regex based match
+
+	if hasReg { // Is Regex
+		regexMessage := strings.TrimPrefix(requirement, "re:") // Remove the indicator this is a regex
+		regex := regexp.MustCompile(regexMessage)              // Create our regex object
+
+		if regex.MatchString(checking) { // If we get a regex match
+			matches = true
+		}
+	} else if matchFromEnd || matchFromBeginning { // Has beginning or ending glob
+		noGlobMatch := strings.Replace(requirement, "*", "", -1)
+
+		if matchFromEnd && matchFromBeginning { // If we're globbing both sides, meaning a single contains
+			if strings.Contains(checking, noGlobMatch) { // If our checking string contains the noGlobMatch
+				matches = true
+			}
+		} else if matchFromEnd && !matchFromBeginning { // If we're only globbing the beginning
+			if strings.HasSuffix(checking, noGlobMatch) { // If our checking string ends with noGlobMatch
+				matches = true
+			}
+		} else if !matchFromEnd && matchFromBeginning { // If we're only globbing the ending
+			if strings.HasPrefix(checking, noGlobMatch) { // If our checking string begins with noGlobMatch
+				matches = true
+			}
+		}
+	} else { // Exact match
+		if checking == requirement { // If this is an exact match
+			matches = true
+		}
+	}
+
+	return matches
 }
 
 // ParseMessage will parse an event and return a NarwhalMessage

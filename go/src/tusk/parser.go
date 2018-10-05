@@ -89,13 +89,9 @@ func Parser(c *girc.Client, e girc.Event) {
 		var userInBlacklist bool
 
 		for _, blacklistUser := range fullBlacklist { // For each user
-			kickUserWithoutSuffix := strings.Replace(blacklistUser, "*", "", -1)
+			userInBlacklist = Matches(blacklistUser, m.Issuer) // Check against our matcher
 
-			if m.Issuer == blacklistUser { // If the user is in the blacklist
-				userInBlacklist = true
-				break
-			} else if strings.HasPrefix(m.Issuer, kickUserWithoutSuffix) { // If the username begins with this kickUser
-				userInBlacklist = true
+			if userInBlacklist {
 				break
 			}
 		}

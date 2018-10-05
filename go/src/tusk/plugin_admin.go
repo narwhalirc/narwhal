@@ -62,6 +62,9 @@ func (adminmanager *NarwhalAdminPlugin) CommandIssuer(c *girc.Client, e girc.Eve
 
 	if !hasGlobal {
 		switch cmd {
+		case "addkicker": // Add Kicker without kick attempt
+			NarwhalAutoKicker.AddUsers(params) // Add the users to Autokick
+			break
 		case "ban": // Ban
 			KickUsers(c, eventChannel, params) // Kick the users before issuing ban
 			NarwhalAutoKicker.AddUsers(params) // Add the users to Autokick
