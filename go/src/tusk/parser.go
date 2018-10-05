@@ -76,9 +76,13 @@ func Parser(c *girc.Client, e girc.Event) {
 		var userInBlacklist bool
 
 		for _, blacklistUser := range Config.Users.Blacklist { // For each user
-			userInBlacklist = Matches(blacklistUser, m.Issuer) // Check against our matcher
+			userInBlacklist = Matches(blacklistUser, m.Issuer) // Check against issuer
 
-			if userInBlacklist {
+			if !userInBlacklist { // Didn't match based on nick
+				userInBlacklist = Matches(blacklistUser, m.Host) // Check against host
+			}
+
+			if userInBlacklist { // Matched
 				break
 			}
 		}
