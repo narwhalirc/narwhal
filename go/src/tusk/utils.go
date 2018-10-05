@@ -58,11 +58,11 @@ func Matches(requirement string, checking string) bool {
 	hasReg := strings.HasPrefix(requirement, "re:")           // Check if this is a regex based match
 
 	if hasReg { // Is Regex
-		regexMessage := strings.TrimPrefix(requirement, "re:") // Remove the indicator this is a regex
-		regex := regexp.MustCompile(regexMessage)              // Create our regex object
-
-		if regex.MatchString(checking) { // If we get a regex match
-			matches = true
+		regexMessage := strings.TrimPrefix(requirement, "re:")          // Remove the indicator this is a regex
+		if regex, reErr := regexp.Compile(regexMessage); reErr == nil { // If we create our regex object and it is valid
+			if regex.MatchString(checking) { // If we get a regex match
+				matches = true
+			}
 		}
 	} else if matchFromEnd || matchFromBeginning { // Has beginning or ending glob
 		noGlobMatch := strings.Replace(requirement, "*", "", -1)
@@ -120,6 +120,27 @@ func ParseMessage(e girc.Event) NarwhalMessage {
 		Message: e.Trailing,
 		Params:  params,
 	}
+}
+
+// RemoveFromStringArr will remove items from the string array
+func RemoveFromStringArr(list []string, items []string) []string {
+	var itemsList = make(map[string]bool) // Map of items and their add / remove state
+	newList := []string{}                 // Items to retain
+
+	for _, item := range list { // For each item in our list
+		for _, itemToRemove := range items { // Items we're wanting to remove
+			if itemToRemove == item { // If this item matches the one we're wanting to remove
+				itemsList[itemToRemove] = true // Should remove the item
+				break
+			}
+		}
+
+		if _, exists := itemsList[item]; !exists { // Item shouldn't be removed
+			newList = append(newList, item) // Add item to new list
+		}
+	}
+
+	return newList
 }
 
 // UnbanUser will unban the specified user from a channel

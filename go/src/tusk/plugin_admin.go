@@ -65,6 +65,10 @@ func (adminmanager *NarwhalAdminPlugin) CommandIssuer(c *girc.Client, e girc.Eve
 		case "addkicker": // Add Kicker without kick attempt
 			NarwhalAutoKicker.AddUsers(params) // Add the users to Autokick
 			break
+		case "addmsg": // Add Message to our MessageMatches
+			msg := strings.Replace(m.Message, "."+m.Command, " ", -1) // Remove command from our whole message to get entire message to add
+			NarwhalAutoKicker.AddMessage(msg)                         // Add the message to Autokick MessageMatches
+			break
 		case "ban": // Ban
 			KickUsers(c, eventChannel, params) // Kick the users before issuing ban
 			NarwhalAutoKicker.AddUsers(params) // Add the users to Autokick
@@ -78,6 +82,10 @@ func (adminmanager *NarwhalAdminPlugin) CommandIssuer(c *girc.Client, e girc.Eve
 			proclamationMessage := "Behold, I am your robot narwhal overlord. Bow before me, puny hoooomans, or I shall unleash source code upon you."
 			c.Cmd.Reply(e, proclamationMessage)
 			c.Cmd.Action(m.Channel, "means to say to visit https://github.com/JoshStrobl/narwhal")
+			break
+		case "removemsg": // Remove Message from our MessageMatches
+			msg := strings.Replace(m.Message, "."+m.Command, " ", -1) // Remove command from our whole message to get entire message to add
+			NarwhalAutoKicker.RemoveMessage(msg)                      // Remove the message from Autokick MessageMatches
 			break
 		case "unban": // Unban
 			NarwhalAutoKicker.RemoveUsers(params) // Remove the users from Autokick

@@ -7,6 +7,7 @@ import (
 	"bytes"
 	"errors"
 	"github.com/BurntSushi/toml"
+	"github.com/JoshStrobl/trunk"
 	"io/ioutil"
 	"path/filepath"
 )
@@ -56,7 +57,7 @@ func ReadConfig() (NarwhalConfig, error) {
 }
 
 // SaveConfig will save the config in our previously recognized location
-func SaveConfig() error {
+func SaveConfig() {
 	var saveErr error
 	var buffer bytes.Buffer
 	writer := bufio.NewWriter(&buffer)
@@ -67,7 +68,9 @@ func SaveConfig() error {
 		saveErr = ioutil.WriteFile(ConfigFoundPath, buffer.Bytes(), 0644) // Write the config
 	}
 
-	return saveErr
+	if saveErr != nil {
+		trunk.LogWarn("Failed to update the configuration: " + saveErr.Error())
+	}
 }
 
 // SetDefaults will set the defaults for the provided NarwhalConfig

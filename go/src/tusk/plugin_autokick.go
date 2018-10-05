@@ -128,6 +128,14 @@ func (autokicker *NarwhalAutoKickerPlugin) Parse(c *girc.Client, e girc.Event, m
 	}
 }
 
+// AddMessage will add the specified message to the AutoKick MessageMatches list, if they aren't already added
+func (autokicker *NarwhalAutoKickerPlugin) AddMessage(message string) {
+	message = strings.TrimSpace(message)
+	Config.Plugins.AutoKick.MessageMatches = append(Config.Plugins.AutoKick.MessageMatches, message) // Add the msg
+	Config.Plugins.AutoKick.MessageMatches = DeduplicateList(Config.Plugins.AutoKick.MessageMatches) // Deduplicate messages and set to MessageMatches
+	SaveConfig()
+}
+
 // AddUsers will add the specified users to the AutoKick Users list, if they aren't already added
 func (autokicker *NarwhalAutoKickerPlugin) AddUsers(users []string) {
 	for _, requestedAddUser := range users {
@@ -135,34 +143,25 @@ func (autokicker *NarwhalAutoKickerPlugin) AddUsers(users []string) {
 	}
 
 	Config.Plugins.AutoKick.Users = DeduplicateList(Config.Plugins.AutoKick.Users) // Deduplicate users and set to AutoKick Users
+	SaveConfig()
+}
 
-	if saveErr := SaveConfig(); saveErr != nil {
-		trunk.LogWarn("Failed to update the configuration: " + saveErr.Error())
-	}
+// RemoveMessage will remove the specified message from the AutoKick MessageMatches list, if they are added
+func (autokicker *NarwhalAutoKickerPlugin) RemoveMessage(message string) {
+	message = strings.TrimSpace(message)
+	messages := []string{message}
+	Config.Plugins.AutoKick.MessageMatches = RemoveFromStringArr(Config.Plugins.AutoKick.MessageMatches, messages) // Remove the specified items from the string array
+	Config.Plugins.AutoKick.MessageMatches = DeduplicateList(Config.Plugins.AutoKick.MessageMatches)               // Deduplicate MessageMatches
+	SaveConfig()
 }
 
 // RemoveUsers will remove the specified users from the AutoKick Users list, if they are added
 func (autokicker *NarwhalAutoKickerPlugin) RemoveUsers(users []string) {
-	var usersList = make(map[string]bool) // Map of users and their add / remove state
-	newUsers := []string{}                // Users to retain
-
-	for _, user := range Config.Plugins.AutoKick.Users { // For each user in Users
-		for _, userToRemove := range users { // Users we're wanting to remove
-			if userToRemove == user { // If this blacklist user matches the user we're wanting to remove
-				usersList[userToRemove] = true   // Should remove the user
-				delete(autokicker.Tracker, user) // Delete user from Tracker
-				break
-			}
-		}
-
-		if _, exists := usersList[user]; !exists { // User shouldn't be removed
-			newUsers = append(newUsers, user)
-		}
+	for _, user := range users { // Users we're wanting to remove
+		delete(autokicker.Tracker, user) // Delete user from Tracker if they exist
 	}
 
-	Config.Plugins.AutoKick.Users = DeduplicateList(newUsers) // Deduplicate users and set to AutoKick Users
-
-	if saveErr := SaveConfig(); saveErr != nil {
-		trunk.LogWarn("Failed to update the configuration: " + saveErr.Error())
-	}
+	Config.Plugins.AutoKick.Users = RemoveFromStringArr(Config.Plugins.AutoKick.Users, users) // Remove the specified items from the string array
+	Config.Plugins.AutoKick.Users = DeduplicateList(Config.Plugins.AutoKick.Users)            // Deduplicate users and set to AutoKick Users
+	SaveConfig()
 }
