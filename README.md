@@ -18,6 +18,7 @@ Currently this functionality includes:
   - Channel-specific banning, kicking, unbanning, "unkicking". Note that Narwhal **must be an op for this**. It will try to op itself when joining a channel.
   - Add / remove messages from AutoKick MessageMatches list.
   - Add / remove users from AutoKick list.
+  - Ability to disable specific admin commands.
 - Autokicking
   - Can automatically kick users on join or messages based on usernames and hosts, with support for basic globbing as well as regex.
   - Can automatically kick a user based on a message. Supports exact message matching, basic globbing, and regex.
@@ -28,6 +29,9 @@ Currently this functionality includes:
   - Slaps the user or if itself, proclaims that it shall not.
 - Song
   - Just spits out the "Narwhals Narwhals" song.
+- Url Parser
+  - Parse URLs to get page title.
+  - Custom Youtube URL parsing to present desktop and mobile links.
 
 ## Plans
 
@@ -52,11 +56,15 @@ To be absolutely clear, Narwhal isn't remotely ready for use. Like I'm not even 
 - [x] Expand on message matching.
   - [x] Should support sub-string matching and regex.
 
+**String Replacer:**
+
+- [ ] Implement basic `.r` string replacement function. Should replace the previously stated message of the issuer or if a target, the last of the target's message.
+
 **URL Parser:**
 
-- [ ] Implement URL parsing in messages. Beyond titles, it should specially handle:
+- [x] Implement URL parsing in messages. Beyond titles, it should specially handle:
   - [ ] Reddit: Present upvotes and downvotes
-  - [ ] Youtube: Present mobile and non-mobile links.
+  - [x] Youtube: Present mobile and non-mobile links.
 
 ## License
 

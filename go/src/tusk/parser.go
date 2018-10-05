@@ -91,7 +91,7 @@ func Parser(c *girc.Client, e girc.Event) {
 			NarwhalAutoKicker.Parse(c, e, m) // Run through auto-kicker first
 		}
 
-		if !userInBlacklist {
+		if !userInBlacklist && (m.Issuer != Config.User) { // Ensure we aren't parsing our own bot messages
 			trunk.LogInfo("Allowed: " + m.Issuer)
 			trunk.LogInfo("Received: " + m.Message)
 			trunk.LogInfo("Host: " + m.Host)
@@ -107,6 +107,10 @@ func Parser(c *girc.Client, e girc.Event) {
 
 			if Config.Plugins.Slap.Enabled { // Slap enabled
 				NarwhalSlap.Parse(c, e, m) // Run through slap
+			}
+
+			if Config.Plugins.UrlParser.Enabled { // Url Parser enabled
+				NarwhalUrlParser.Parse(c, e, m) // Run through URL parser
 			}
 		}
 	}

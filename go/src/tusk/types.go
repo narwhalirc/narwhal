@@ -2,6 +2,7 @@ package tusk
 
 import (
 	"github.com/lrstanley/girc"
+	"net/url"
 )
 
 // Our structs and interfaces
@@ -36,6 +37,21 @@ type NarwhalConfig struct {
 	Users NarwhalUsersConfig `toml:"Users,omitempty"`
 }
 
+// NarwhalLink is a struct containing information related to an HTTP resource
+type NarwhalLink struct {
+	// IsReddit designates whether this resource is a Reddit URL
+	IsReddit bool
+
+	// IsYoutube designates whether this resource is a Youtube URL
+	IsYoutube bool
+
+	// Link is our net URL struct
+	Link url.URL
+
+	// Title is the page title
+	Title string
+}
+
 // NarwhalMessage is a custom message
 type NarwhalMessage struct {
 	Channel      string
@@ -63,8 +79,9 @@ type NarwhalUsersConfig struct {
 
 // NarwhalPluginsConfig is a list of command configurations
 type NarwhalPluginsConfig struct {
-	Admin    NarwhalAdminConfig
-	AutoKick NarwhalAutoKickerConfig
-	Slap     NarwhalSlapConfig
-	Song     NarwhalSongConfig
+	Admin     NarwhalAdminConfig
+	AutoKick  NarwhalAutoKickerConfig
+	Slap      NarwhalSlapConfig
+	Song      NarwhalSongConfig
+	UrlParser NarwhalUrlParserConfig
 }
