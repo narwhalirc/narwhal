@@ -10,6 +10,8 @@ var NarwhalAdminManager NarwhalAdminPlugin
 
 // NarwhalAdminConfig is our configuration for the Narwhal admin plugin
 type NarwhalAdminConfig struct {
+	// DisabledCommands is a list of admin commands to disable
+	DisabledCommands []string
 	// Enabled determines whether to enable this functionality
 	Enabled bool
 }
@@ -65,7 +67,7 @@ func (adminmanager *NarwhalAdminPlugin) CommandIssuer(c *girc.Client, e girc.Eve
 
 	// #region Channel-specific commands
 
-	if !hasGlobal {
+	if !hasGlobal && !IsInStringArr(Config.Plugins.Admin.DisabledCommands, "addhost") { // Not a global command and not disabled
 		switch cmd {
 		case "addhost": // Add Host to AutoKick Hosts
 			NarwhalAutoKicker.AddHost(m.MessageNoCmd) // Add the host

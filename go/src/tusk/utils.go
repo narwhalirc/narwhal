@@ -37,6 +37,20 @@ func DeduplicateList(list []string) []string {
 	return newList
 }
 
+// IsInStringArr will check if this item is in the specified string array
+func IsInStringArr(list []string, item string) bool {
+	var isInArr bool
+
+	for _, listItem := range list {
+		if listItem == item {
+			isInArr = true
+			break
+		}
+	}
+
+	return isInArr
+}
+
 // KickUser will kick the specified user from a channel
 func KickUser(c *girc.Client, channel string, user string) {
 	c.Cmd.Kick(channel, user, "Detected by this Narwhal for kick approval. Kicking.")

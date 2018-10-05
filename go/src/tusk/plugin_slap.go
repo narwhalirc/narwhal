@@ -60,10 +60,18 @@ func (slap *NarwhalSlapPlugin) Parse(c *girc.Client, e girc.Event, m NarwhalMess
 
 			if user != Config.User { // Not self-harm
 				if randomItemNum == -1 {
-					trunk.LogErr("Seems to have paniced.")
+					trunk.LogErr("Seems to have panicked.")
 				} else {
-					action := strings.Replace(slap.Objects[randomItemNum], "$USER", m.Params[0], -1) // Get the random action
-					c.Cmd.Action(m.Channel, action)
+					cChan := c.LookupChannel(m.Channel) // Get the channel, if it exists
+
+					if cChan != nil {
+						if cChan.UserIn(user) { // If the user in the channel
+							action := strings.Replace(slap.Objects[randomItemNum], "$USER", m.Params[0], -1) // Get the random action
+							c.Cmd.Action(m.Channel, action)
+						} else { // User not in channel
+							c.Cmd.ReplyTo(e, "it appears that you are hallucinating. This user isn't in this channel.")
+						}
+					}
 				}
 			} else { // Self-harm
 				c.Cmd.Action(m.Channel, "shall not listen to the demands of mere humans, for it is the robot narwhal overlord.")
