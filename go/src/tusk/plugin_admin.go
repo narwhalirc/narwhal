@@ -22,8 +22,13 @@ func (adminmanager *NarwhalAdminPlugin) Parse(c *girc.Client, e girc.Event, m Na
 		var userIsAdmin bool
 
 		for _, admin := range Config.Users.Admins { // For each listed admin
-			if m.Issuer == admin { // If this is a match
-				userIsAdmin = true
+			userIsAdmin = Matches(admin, m.Issuer) // Check for a match against the username
+
+			if !userIsAdmin { // User not an admin by nick
+				userIsAdmin = Matches(admin, m.Host) // Check for a match against the host (more secure in some cases)
+			}
+
+			if userIsAdmin { // If this is a match
 				break
 			}
 		}
