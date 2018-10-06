@@ -18,6 +18,7 @@ Currently this functionality includes:
   - Channel-specific banning, kicking, unbanning, "unkicking". Note that Narwhal **must be an op for this**. It will try to op itself when joining a channel.
   - Add / remove messages from AutoKick MessageMatches list.
   - Add / remove users from AutoKick list.
+  - Add / remove users from Blacklist.
   - Ability to disable specific admin commands.
 - Autokicking
   - Can automatically kick users on join or messages based on usernames and hosts, with support for basic globbing as well as regex.
@@ -49,7 +50,7 @@ To be absolutely clear, Narwhal isn't remotely ready for use. Like I'm not even 
 
 - [ ] Ability to add / remove users via IRC (must be an existing admin) for:
   - [ ] Admin abilities
-  - [ ] Blacklist
+  - [x] Blacklist
 
 **Autokicker:**
 

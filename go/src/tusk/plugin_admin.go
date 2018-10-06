@@ -83,6 +83,9 @@ func (adminmanager *NarwhalAdminPlugin) CommandIssuer(c *girc.Client, e girc.Eve
 			NarwhalAutoKicker.AddUsers(params) // Add the users to Autokick
 			BanUsers(c, eventChannel, params)  // Ban the users
 			break
+		case "blacklist": // Blacklist
+			adminmanager.Blacklist(params) // Blacklist the user(s)
+			break
 		case "kick": // Kick
 			KickUsers(c, eventChannel, params) // Kick the users
 			NarwhalAutoKicker.AddUsers(params) // Add the users to Autokick
@@ -98,6 +101,9 @@ func (adminmanager *NarwhalAdminPlugin) CommandIssuer(c *girc.Client, e girc.Eve
 		case "removemsg": // Remove Message from our MessageMatches
 			NarwhalAutoKicker.RemoveMessage(m.MessageNoCmd) // Remove the message from Autokick MessageMatches
 			break
+		case "rmblacklist": // Remove user(s) from Blacklist
+			adminmanager.RemoveFromBlacklist(params)
+			break
 		case "unban": // Unban
 			NarwhalAutoKicker.RemoveUsers(params) // Remove the users from Autokick
 			UnbanUsers(c, eventChannel, params)   // Unban the users
@@ -110,4 +116,17 @@ func (adminmanager *NarwhalAdminPlugin) CommandIssuer(c *girc.Client, e girc.Eve
 	}
 
 	// #endregion
+}
+
+// Blacklist will add users to the blacklist
+func (adminmanager *NarwhalAdminPlugin) Blacklist(users []string) {
+	Config.Users.Blacklist = append(Config.Users.Blacklist, users...) // Add users
+	Config.Users.Blacklist = DeduplicateList(Config.Users.Blacklist)
+	SaveConfig()
+}
+
+// RemoveFromBlacklist will remove users from the blacklist
+func (adminmanager *NarwhalAdminPlugin) RemoveFromBlacklist(users []string) {
+	Config.Users.Blacklist = RemoveFromStringArr(Config.Users.Blacklist, users) // Remove the user
+	SaveConfig()
 }
