@@ -86,6 +86,9 @@ func (adminmanager *NarwhalAdminPlugin) CommandIssuer(c *girc.Client, e girc.Eve
 		case "blacklist": // Blacklist
 			adminmanager.Blacklist(params) // Blacklist the user(s)
 			break
+		case "leave": // Leave a channel
+			c.Cmd.Action(m.Channel, "has far more important things to attend do!")
+			c.Cmd.Part(m.Channel)
 		case "kick": // Kick
 			KickUsers(c, eventChannel, params) // Kick the users
 			NarwhalAutoKicker.AddUsers(params) // Add the users to Autokick
