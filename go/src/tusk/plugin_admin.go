@@ -67,7 +67,7 @@ func (adminmanager *NarwhalAdminPlugin) CommandIssuer(c *girc.Client, e girc.Eve
 
 	// #region Channel-specific commands
 
-	if !hasGlobal && !IsInStringArr(Config.Plugins.Admin.DisabledCommands, "addhost") { // Not a global command and not disabled
+	if !hasGlobal && !IsInStringArr(Config.Plugins.Admin.DisabledCommands, cmd) { // Not a global command and not disabled
 		switch cmd {
 		case "addhost": // Add Host to AutoKick Hosts
 			NarwhalAutoKicker.AddHost(m.MessageNoCmd) // Add the host
