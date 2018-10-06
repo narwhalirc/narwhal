@@ -6,8 +6,10 @@ import (
 	"github.com/PuerkitoBio/goquery"
 	"github.com/lrstanley/girc"
 	"io/ioutil"
+	//	"math"
 	"net/http"
 	"net/url"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -35,6 +37,12 @@ func (parser *NarwhalUrlParserPlugin) NewClient(u url.URL) (http.Client, http.Re
 	}
 
 	requestHeaders.Set("User-Agent", "Narwhal Bot 0.1-alpha")
+
+	if strings.HasSuffix(u.Host, "reddit.com") { // If this is reddit.com
+		if u.Host != "old.reddit.com" { // If this isn't old.reddit.com, which is far more parser friendly
+			u.Host = "old.reddit.com"
+		}
+	}
 
 	request := http.Request{
 		Header: requestHeaders,
@@ -72,11 +80,17 @@ func (parser *NarwhalUrlParserPlugin) Parse(c *girc.Client, e girc.Event, m Narw
 							if newDocErr == nil { // If we successfully got the document
 								var isReddit bool
 								var isYoutube bool
+								var votes NarwhalRedditVotes
 
 								title := doc.Find("title").Text() // Get the title of the page
 
 								if strings.HasSuffix(url.Host, "reddit.com") { // If this is Reddit
 									isReddit = true
+									votes = NarwhalRedditVotes{
+										Dislikes: doc.Find(".unvoted > .dislikes").Text(),
+										Likes:    doc.Find(".unvoted > .likes").Text(),
+										Score:    doc.Find(".unvoted > .unvoted").Text(),
+									}
 								} else if strings.HasSuffix(url.Host, "youtube.com") || strings.HasSuffix(url.Host, "youtu.be") { // If this is Youtube
 									isYoutube = true
 									title = strings.TrimSuffix(title, "- YouTube") // Strip - Youtube from title
@@ -87,6 +101,7 @@ func (parser *NarwhalUrlParserPlugin) Parse(c *girc.Client, e girc.Event, m Narw
 									IsYoutube: isYoutube,
 									Link:      url,
 									Title:     strings.TrimSpace(title),
+									Votes:     votes,
 								})
 							}
 						}
@@ -98,7 +113,9 @@ func (parser *NarwhalUrlParserPlugin) Parse(c *girc.Client, e girc.Event, m Narw
 
 	if len(links) > 0 { // If we found links
 		for _, link := range links { // For each link
-			if link.IsYoutube { // If this is Youtube
+			if link.IsReddit { // If this is Reddit
+				parser.ParseReddit(c, e, link) // Hand off to ParseReddit
+			} else if link.IsYoutube { // If this is Youtube
 				parser.ParseYoutube(c, e, link) // Hand off to ParseYoutube
 			} else { // Some other link
 				title := fmt.Sprintf("[ %s ]", link.Title)
@@ -106,6 +123,39 @@ func (parser *NarwhalUrlParserPlugin) Parse(c *girc.Client, e girc.Event, m Narw
 			}
 		}
 	}
+}
+
+// ParseReddit will parse the Reddit URL and metadata, outputting into the event the information
+func (parser *NarwhalUrlParserPlugin) ParseReddit(c *girc.Client, e girc.Event, l NarwhalLink) {
+	var title string
+
+	if l.Votes.Dislikes != "" && l.Votes.Likes != "" && l.Votes.Score != "" {
+		var convertScoreErr error
+		var downvotes int
+		var upvotes int
+
+		downvotes, convertScoreErr = strconv.Atoi(l.Votes.Dislikes)
+
+		if convertScoreErr == nil { // No error converting downvotes
+			upvotes, convertScoreErr = strconv.Atoi(l.Votes.Likes)
+		}
+
+		if convertScoreErr == nil { // No error converting downvotes and upvotes
+			percentage := int((float64(downvotes) / float64(upvotes)) * 100)
+
+			if percentage == 0 { // 100% upvote
+				percentage = 100
+			}
+
+			title = fmt.Sprintf("[ %s ][Score: %s, %d%% upvotes]", l.Title, l.Votes.Score, percentage)
+		} else {
+			title = fmt.Sprintf("[ %s ]", l.Title)
+		}
+	} else {
+		title = fmt.Sprintf("[ %s ]", l.Title)
+	}
+
+	c.Cmd.Reply(e, title)
 }
 
 // ParseYoutube will parse the Youtube URL and output into the event target the information

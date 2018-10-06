@@ -31,6 +31,7 @@ Currently this functionality includes:
   - Just spits out the "Narwhals Narwhals" song.
 - Url Parser
   - Parse URLs to get page title.
+  - Custom Reddit URL parsing to present title and score (includes upvotes)
   - Custom Youtube URL parsing to present desktop and mobile links.
 
 ## Plans
@@ -63,7 +64,7 @@ To be absolutely clear, Narwhal isn't remotely ready for use. Like I'm not even 
 **URL Parser:**
 
 - [x] Implement URL parsing in messages. Beyond titles, it should specially handle:
-  - [ ] Reddit: Present upvotes and downvotes
+  - [x] Reddit: Present upvotes and downvotes
   - [x] Youtube: Present mobile and non-mobile links.
 
 ## License

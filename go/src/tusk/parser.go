@@ -44,6 +44,7 @@ func OnConnected(c *girc.Client, e girc.Event) {
 		for _, channel := range Config.Channels { // For each channel to join
 			c.Cmd.Join(channel)
 			c.Cmd.Mode(channel, "+o") // Attempt to op self
+			trunk.LogInfo("Joining " + channel)
 		}
 	}
 }

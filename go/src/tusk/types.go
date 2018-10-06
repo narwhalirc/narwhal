@@ -50,6 +50,9 @@ type NarwhalLink struct {
 
 	// Title is the page title
 	Title string
+
+	// Votes is the Reddit votes (if IsReddit)
+	Votes NarwhalRedditVotes
 }
 
 // NarwhalMessage is a custom message
@@ -66,6 +69,13 @@ type NarwhalMessage struct {
 // NarwhalPlugin is a plugin interface
 type NarwhalPlugin interface {
 	Parse(c *girc.Client, e girc.Event, m NarwhalMessage)
+}
+
+// NarwhalRedditVotes is the total votes for a reddit thread
+type NarwhalRedditVotes struct {
+	Dislikes string
+	Likes    string
+	Score    string
 }
 
 // NarwhalUsersConfig is our configuration for blacklisting users, administrative users, and autokicking
