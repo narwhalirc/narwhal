@@ -56,6 +56,7 @@ func OnInvite(c *girc.Client, e girc.Event) {
 	c.Cmd.Join(channel)
 
 	Config.Channels = append(Config.Channels, channel)
+	Config.Channels = DeduplicateList(Config.Channels)
 	SaveConfig()
 }
 
