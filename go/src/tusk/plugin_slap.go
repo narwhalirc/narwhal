@@ -33,6 +33,7 @@ func init() {
 		"destroys $USER",
 		"discombobulates $USER",
 		"does far worse, taking $USER's system and installing Windows",
+		"gives $USER a splinter",
 		"just looks at $USER with disappointment",
 		"opts to not slap $USER today, but rather gives them a cookie",
 		"punches $USER",
