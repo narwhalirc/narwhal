@@ -116,7 +116,7 @@ func Parser(c *girc.Client, e girc.Event) {
 				NarwhalSlap.Parse(c, e, m) // Run through slap
 			}
 
-			if PluginManager.IsEnabled("URLParser") { // Url Parser enabled
+			if PluginManager.IsEnabled("UrlParser") { // Url Parser enabled
 				NarwhalUrlParser.Parse(c, e, m) // Run through URL parser
 			}
 		}
