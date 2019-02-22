@@ -45,6 +45,9 @@ func (adminmanager *NarwhalAdminPlugin) CommandIssuer(c *girc.Client, e girc.Eve
 
 	if !hasGlobal && !IsInStringArr(Config.Plugins.Admin.DisabledCommands, cmd) { // Not a global command and not disabled
 		switch cmd {
+		case "addadmin": // Add Admin to Admins
+			adminmanager.AddAdmin(c, m.MessageNoCmd)
+			break
 		case "addhost": // Add Host to AutoKick Hosts
 			NarwhalAutoKicker.AddHost(m.MessageNoCmd) // Add the host
 			break
@@ -77,6 +80,9 @@ func (adminmanager *NarwhalAdminPlugin) CommandIssuer(c *girc.Client, e girc.Eve
 			c.Cmd.Reply(e, proclamationMessage)
 			c.Cmd.Action(m.Channel, "means to say to visit https://github.com/JoshStrobl/narwhal")
 			break
+		case "removeadmin": // Remove Admin from Admins
+			adminmanager.RemoveAdmin(c, m.MessageNoCmd)
+			break
 		case "removehost": // Remove Host from AutoKick Hosts
 			NarwhalAutoKicker.RemoveHost(m.MessageNoCmd) // Remove the host
 			break
@@ -104,10 +110,43 @@ func (adminmanager *NarwhalAdminPlugin) CommandIssuer(c *girc.Client, e girc.Eve
 	// #endregion
 }
 
+// AddAdmin will add a user to the admin list
+// This will add them based on the provided nick. If they are currently on the network, we will add them based on their ident as well.
+func (adminmanager *NarwhalAdminPlugin) AddAdmin(c *girc.Client, user string) {
+	if user == "" {
+		return
+	}
+
+	Config.Users.Admins = append(Config.Users.Admins, user) // Add the user
+
+	if lookedupUser := c.LookupUser(user); lookedupUser != nil { // User exists
+		Config.Users.Admins = append(Config.Users.Admins, lookedupUser.Ident + "@" + lookedupUser.Host)
+	}
+
+	SaveConfig()
+}
+
 // Blacklist will add users to the blacklist
 func (adminmanager *NarwhalAdminPlugin) Blacklist(users []string) {
 	Config.Users.Blacklist = append(Config.Users.Blacklist, users...) // Add users
 	Config.Users.Blacklist = DeduplicateList(Config.Users.Blacklist)
+	SaveConfig()
+}
+
+// RemoveAdmin will remove a user from the admin list
+// This will remove them based on the provided nick. If they are currently on the network, we will remove them based on their ident as well.
+func (adminmanager *NarwhalAdminPlugin) RemoveAdmin(c *girc.Client, user string) {
+	if user == "" {
+		return
+	}
+
+	itemsToRemove := []string { user }
+
+	if lookedupUser := c.LookupUser(user); lookedupUser != nil { // User exists
+		itemsToRemove = append(itemsToRemove, lookedupUser.Ident + "@" + lookedupUser.Host)
+	}
+
+	Config.Users.Admins = RemoveFromStringArr(Config.Users.Admins, itemsToRemove)
 	SaveConfig()
 }
 

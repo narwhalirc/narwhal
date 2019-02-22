@@ -48,8 +48,8 @@ To be absolutely clear, Narwhal isn't remotely ready for use. Like I'm not even 
 
 **Admin / Op functionality.**
 
-- [ ] Ability to add / remove users via IRC (must be an existing admin) for:
-  - [ ] Admin abilities
+- [x] Ability to add / remove users via IRC (must be an existing admin) for:
+  - [x] Admin abilities
   - [x] Blacklist
 
 **Autokicker:**
