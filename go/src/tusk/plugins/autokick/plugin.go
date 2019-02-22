@@ -74,7 +74,7 @@ func (autokicker *NarwhalAutoKickerPlugin) Parse(c *girc.Client, e girc.Event, m
 
 	// #endregion
 
-	if userShouldBeKicked {
+	if userShouldBeKicked && !IsAdmin(m) { // If the user is indicated to be kicked and is not an admin
 		trunk.LogInfo("AutoKick triggered. Kicking " + m.Issuer)
 		kickCount := 0
 

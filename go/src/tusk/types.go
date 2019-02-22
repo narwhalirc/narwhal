@@ -92,7 +92,7 @@ type NarwhalUsersConfig struct {
 type NarwhalPluginsConfig struct {
 	Enabled []string
 
-	Admin    NarwhalAdminConfig
-	AutoKick NarwhalAutoKickerConfig
-	Slap     NarwhalSlapConfig
+	Admin    NarwhalAdminConfig `toml:"Admin,omitempty"`
+	AutoKick NarwhalAutoKickerConfig `toml:"AutoKick,omitempty"`
+	Slap     NarwhalSlapConfig `toml:"Slap,omitempty"`
 }
