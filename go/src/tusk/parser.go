@@ -3,7 +3,6 @@ package tusk
 import (
 	"github.com/JoshStrobl/trunk"
 	"github.com/lrstanley/girc"
-	"strings"
 )
 
 // adminCommands is a list of admin commands
@@ -51,13 +50,18 @@ func OnConnected(c *girc.Client, e girc.Event) {
 
 // OnInvite will handle a request to invite an IRC channel
 func OnInvite(c *girc.Client, e girc.Event) {
-	channel := strings.TrimSpace(e.Trailing)
-	trunk.LogInfo("Received invite to " + channel + ". Joining.")
-	c.Cmd.Join(channel)
+	msg := ParseMessage(e) // Parse our message
 
-	Config.Channels = append(Config.Channels, channel)
-	Config.Channels = DeduplicateList(Config.Channels)
-	SaveConfig()
+	if IsAdmin(msg) { // If the issuer of the command is an admin
+		trunk.LogInfo("Received invite to " + msg.Message + ". Joining.")
+		c.Cmd.Join(msg.Message)
+
+		Config.Channels = append(Config.Channels, msg.Message)
+		Config.Channels = DeduplicateList(Config.Channels)
+		SaveConfig()
+	} else {
+		trunk.LogInfo("Rejecting invite by non-admin " + msg.Issuer + " to " + msg.Message)
+	}
 }
 
 // Parser will handle the majority of incoming messages, user joins, etc.
@@ -89,29 +93,30 @@ func Parser(c *girc.Client, e girc.Event) {
 			}
 		}
 
-		if Config.Plugins.AutoKick.Enabled { // AutoKick enabled
+		if PluginManager.IsEnabled("AutoKick") { // AutoKick enabled
 			NarwhalAutoKicker.Parse(c, e, m) // Run through auto-kicker first
 		}
 
 		if !userInBlacklist && (m.Issuer != Config.User) { // Ensure we aren't parsing our own bot messages
 			trunk.LogInfo("Allowed: " + m.Issuer)
+			trunk.LogInfo("Full Issuer: " + m.FullIssuer)
 			trunk.LogInfo("Received: " + m.Message)
 			trunk.LogInfo("Host: " + m.Host)
 			trunk.LogInfo("Possible Channel: " + m.Channel)
 
-			if Config.Plugins.Admin.Enabled { // Admin Management enabled
+			if PluginManager.IsEnabled("Admin") { // Admin Management enabled
 				NarwhalAdminManager.Parse(c, e, m) // Run through management
 			}
 
-			if Config.Plugins.Song.Enabled { // Song enabled
+			if PluginManager.IsEnabled("Song") { // Song enabled
 				NarwhalSong.Parse(c, e, m) // Run through song
 			}
 
-			if Config.Plugins.Slap.Enabled { // Slap enabled
+			if PluginManager.IsEnabled("Slap") { // Slap enabled
 				NarwhalSlap.Parse(c, e, m) // Run through slap
 			}
 
-			if Config.Plugins.UrlParser.Enabled { // Url Parser enabled
+			if PluginManager.IsEnabled("URLParser") { // Url Parser enabled
 				NarwhalUrlParser.Parse(c, e, m) // Run through URL parser
 			}
 		}

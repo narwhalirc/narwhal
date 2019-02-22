@@ -11,20 +11,6 @@ import (
 // NarwhalSlap is our slap plugin
 var NarwhalSlap NarwhalSlapPlugin
 
-// NarwhalSlapConfig is our configuration for the Narwhal autokicker
-type NarwhalSlapConfig struct {
-	// Enabled determines whether to enable this functionality
-	Enabled bool
-
-	// CustomActions is a list of custom actions on how to slap a user
-	CustomActions []string
-}
-
-// NarwhalSlapPlugin is our slap plugin
-type NarwhalSlapPlugin struct {
-	Objects []string
-}
-
 func init() {
 	objects := []string{
 		"annihilates $USER",

@@ -37,6 +37,29 @@ func DeduplicateList(list []string) []string {
 	return newList
 }
 
+// IsAdmin will return if the user is an admin
+func IsAdmin(m NarwhalMessage) bool {
+	var userIsAdmin bool
+
+	for _, admin := range Config.Users.Admins { // For each listed admin
+		userIsAdmin = Matches(admin, m.Issuer) // Check for a match against the username
+
+		if !userIsAdmin { // User not an admin by nick
+			userIsAdmin = Matches(admin, m.Host) // Check for a match against the host (more secure in some cases)
+		}
+
+		if !userIsAdmin {
+			userIsAdmin = Matches(admin, m.FullIssuer) // Try one last time but with full issuer
+		}
+
+		if userIsAdmin { // If this is a match
+			break
+		}
+	}
+
+	return userIsAdmin
+}
+
 // IsInStringArr will check if this item is in the specified string array
 func IsInStringArr(list []string, item string) bool {
 	var isInArr bool
@@ -130,6 +153,7 @@ func ParseMessage(e girc.Event) NarwhalMessage {
 		Channel:      channel,
 		Command:      command,
 		Host:         e.Source.Host,
+		FullIssuer:   e.Source.Ident + "@" + e.Source.Host,
 		Issuer:       user,
 		Message:      e.Trailing,
 		MessageNoCmd: strings.TrimSpace(strings.Replace(e.Trailing, "."+command, "", -1)),

@@ -6,7 +6,6 @@ import (
 	"github.com/PuerkitoBio/goquery"
 	"github.com/lrstanley/girc"
 	"io/ioutil"
-	//	"math"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -14,18 +13,8 @@ import (
 	"time"
 )
 
-// This file contains our URL parsing
-
 // NarwhalUrlParser is our url parser
 var NarwhalUrlParser NarwhalUrlParserPlugin
-
-// NarwhalUrlParserConfig is our configuration for the Narwhal URL parsing
-type NarwhalUrlParserConfig struct {
-	// Enabled determines whether to enable this functionality
-	Enabled bool
-}
-
-type NarwhalUrlParserPlugin struct{}
 
 // NewClient will create a new request-specific client, with our defined user agent, for the purposes of page fetching.
 // If successful, it will return both the client and the request for use

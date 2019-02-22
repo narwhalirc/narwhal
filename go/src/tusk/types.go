@@ -60,6 +60,7 @@ type NarwhalMessage struct {
 	Channel      string
 	Command      string
 	Host         string
+	FullIssuer   string
 	Issuer       string
 	Message      string
 	MessageNoCmd string
@@ -89,9 +90,9 @@ type NarwhalUsersConfig struct {
 
 // NarwhalPluginsConfig is a list of command configurations
 type NarwhalPluginsConfig struct {
-	Admin     NarwhalAdminConfig
-	AutoKick  NarwhalAutoKickerConfig
-	Slap      NarwhalSlapConfig
-	Song      NarwhalSongConfig
-	UrlParser NarwhalUrlParserConfig
+	Enabled []string
+
+	Admin    NarwhalAdminConfig
+	AutoKick NarwhalAutoKickerConfig
+	Slap     NarwhalSlapConfig
 }

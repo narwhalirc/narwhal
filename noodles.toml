@@ -8,9 +8,13 @@ Version = 0.1
 		Binary = true
 		Destination = "build/narwhal"
 		Plugin = "go"
+		Requires = ["tusk"]
 		Source = "src/narwhal/*.go"
+		Type = "binary"
 	[Projects.tusk]
+		ConsolidateChildDirs = true
 		Destination = ""
 		Plugin = "go"
 		SimpleName = "tusk"
-		Source = ""
+		Source = "src/tusk/*.go"
+		Type = "package"

@@ -5,36 +5,41 @@ import (
 	"github.com/lrstanley/girc"
 	"os"
 	"os/user"
+	"path/filepath"
 )
 
 // A Narwhal is no Narwhal without their tusk!
 
+// Consistent paths
+var Paths []string
+
 // Config is our Narwhal Config
 var Config NarwhalConfig
 
-// HomeDir is the current user's home directory
-var HomeDir string
-
-// WorkDir is our current working directory
-var WorkDir string
+// PluginManager is our Plugin Manager
+var PluginManager NarwhalPluginManager
 
 func init() {
 	var getUserErr error
-	var getWdErr error
 	var currentUser *user.User
 
 	currentUser, getUserErr = user.Current() // Attempt to get the current user
 
-	if getUserErr == nil { // If we successfully got the user
-		HomeDir = currentUser.HomeDir
-	} else {
+	if getUserErr != nil { // If we successfully got the user
 		trunk.LogFatal("Failed to get the current user: " + getUserErr.Error())
 	}
 
-	WorkDir, getWdErr = os.Getwd() // Get the current working directory
+	workdir, getWdErr := os.Getwd() // Get the current working directory
 
 	if getWdErr != nil { // If we failed to get the current working dir
 		trunk.LogFatal("Failed to get the current working directory: " + getWdErr.Error())
+	}
+
+	Paths = []string{
+		filepath.Join(currentUser.HomeDir, ".config", "narwhal"),
+		workdir,
+		"/etc/narwhal",
+		"/usr/share/defaults/narwhal",
 	}
 }
 

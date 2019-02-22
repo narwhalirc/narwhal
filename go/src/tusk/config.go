@@ -12,33 +12,22 @@ import (
 	"path/filepath"
 )
 
-// ConfigPaths is our valid config paths
-var ConfigPaths []string
-
 // ConfigFoundPath is the directory we found the config in
 var ConfigFoundPath string
-
-func init() {
-	ConfigPaths = []string{
-		filepath.Join(HomeDir, ".config", "narwhal", "config.toml"), // User's XDG_CONFIG_DIR
-		filepath.Join(WorkDir, "config.toml"),                       // Local
-		"/etc/narwhal/config.toml",                                  // System-wide
-		"/usr/share/defaults/narwhal/config.toml",                   // Stateless vendor config
-	}
-}
 
 // ReadConfig will read our narwhal configuration, if it exists, and return it
 func ReadConfig() (NarwhalConfig, error) {
 	var config NarwhalConfig
 	var readErr error
 
-	for index, dir := range ConfigPaths { // Search each path
-		if configBytes, readErr := ioutil.ReadFile(dir); readErr == nil { // If we successfully read the file
+	for index, dir := range Paths { // Search each path
+		tomlPath := filepath.Join(dir, "config.toml")
+		if configBytes, readErr := ioutil.ReadFile(tomlPath); readErr == nil { // If we successfully read the file
 			if len(configBytes) > 0 { // If file is not empty
 				decodeErr := toml.Unmarshal(configBytes, &config)
 
 				if decodeErr == nil { // No error during unmarshal
-					ConfigFoundPath = dir
+					ConfigFoundPath = tomlPath
 					config = SetDefaults(config) // Enforce config defaults
 				} else {
 					readErr = errors.New("Failed to decode config: " + decodeErr.Error())
@@ -47,7 +36,7 @@ func ReadConfig() (NarwhalConfig, error) {
 				break
 			}
 		} else { // Failed to read the file
-			if index == (len(ConfigPaths) - 1) { // Last file being read
+			if index == (len(Paths) - 1) { // Last file being read
 				readErr = errors.New("Failed to find Narwhal's config.toml in any recognized location.")
 			}
 		}
