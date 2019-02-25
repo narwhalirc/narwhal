@@ -108,6 +108,11 @@ func Parser(c *girc.Client, e girc.Event) {
 				NarwhalAdminManager.Parse(c, e, m) // Run through management
 			}
 
+			if PluginManager.IsEnabled("Replacer") { // Replacer enabled
+				NarwhalReplacer.AddToCache(m)
+				NarwhalReplacer.Parse(c, e, m) // Run through replacer
+			}
+
 			if PluginManager.IsEnabled("Song") { // Song enabled
 				NarwhalSong.Parse(c, e, m) // Run through song
 			}

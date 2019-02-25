@@ -26,6 +26,8 @@ Currently this functionality includes:
   - Can automatically ban a user after they repeatedly rejoin after being kicked.
 - Blacklisting
   - Ignores requests to the bot by specific users. Supports basic globbing currently.
+- Replacer
+  - Can replace own or other user messages. Uses the syntax: `.r username, s/searchword/replacerword/`
 - Slap
   - Slaps the user or if itself, proclaims that it shall not.
 - Song
@@ -60,7 +62,7 @@ To be absolutely clear, Narwhal isn't remotely ready for use. Like I'm not even 
 
 **String Replacer:**
 
-- [ ] Implement basic `.r` string replacement function. Should replace the previously stated message of the issuer or if a target, the last of the target's message.
+- [x] Implement basic `.r` string replacement function. Should replace the previously stated message of the issuer or if a target, the last of the target's message.
 
 **URL Parser:**
 

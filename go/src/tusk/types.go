@@ -94,5 +94,6 @@ type NarwhalPluginsConfig struct {
 
 	Admin    NarwhalAdminConfig `toml:"Admin,omitempty"`
 	AutoKick NarwhalAutoKickerConfig `toml:"AutoKick,omitempty"`
+	Replacer NarwhalReplacerConfig `toml:"Replacer,omitempty"`
 	Slap     NarwhalSlapConfig `toml:"Slap,omitempty"`
 }

@@ -39,30 +39,32 @@ func init() {
 }
 
 func (slap *NarwhalSlapPlugin) Parse(c *girc.Client, e girc.Event, m NarwhalMessage) {
-	if m.Command == "slap" {
-		if len(m.Params) == 1 { // If a user has been specified
-			user := m.Params[0]
-			rand.Seed(time.Now().Unix()) // Seed on Parse
-			randomItemNum := rand.Intn(len(slap.Objects))
+	if m.Command != "slap" {
+		return
+	}
 
-			if user != Config.User { // Not self-harm
-				if randomItemNum == -1 {
-					trunk.LogErr("Seems to have panicked.")
-				} else {
-					cChan := c.LookupChannel(m.Channel) // Get the channel, if it exists
+	if len(m.Params) == 1 { // If a user has been specified
+		user := m.Params[0]
+		rand.Seed(time.Now().Unix()) // Seed on Parse
+		randomItemNum := rand.Intn(len(slap.Objects))
 
-					if cChan != nil {
-						if cChan.UserIn(user) { // If the user in the channel
-							action := strings.Replace(slap.Objects[randomItemNum], "$USER", m.Params[0], -1) // Get the random action
-							c.Cmd.Action(m.Channel, action)
-						} else { // User not in channel
-							c.Cmd.ReplyTo(e, "it appears that you are hallucinating. This user isn't in this channel.")
-						}
+		if user != Config.User { // Not self-harm
+			if randomItemNum == -1 {
+				trunk.LogErr("Seems to have panicked.")
+			} else {
+				cChan := c.LookupChannel(m.Channel) // Get the channel, if it exists
+
+				if cChan != nil {
+					if cChan.UserIn(user) { // If the user in the channel
+						action := strings.Replace(slap.Objects[randomItemNum], "$USER", m.Params[0], -1) // Get the random action
+						c.Cmd.Action(m.Channel, action)
+					} else { // User not in channel
+						c.Cmd.ReplyTo(e, "it appears that you are hallucinating. This user isn't in this channel.")
 					}
 				}
-			} else { // Self-harm
-				c.Cmd.Action(m.Channel, "shall not listen to the demands of mere humans, for it is the robot narwhal overlord.")
 			}
+		} else { // Self-harm
+			c.Cmd.Action(m.Channel, "shall not listen to the demands of mere humans, for it is the robot narwhal overlord.")
 		}
 	}
 }

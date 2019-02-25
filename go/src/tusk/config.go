@@ -80,5 +80,9 @@ func SetDefaults(config NarwhalConfig) NarwhalConfig {
 		config.Plugins.AutoKick.MinimumKickToBanCount = 3
 	}
 
+	if config.Plugins.Replacer.CachedMessageLimit == 0 { // Can't have a cache limit of 0
+		config.Plugins.Replacer.CachedMessageLimit = 10 // Set to 10
+	}
+
 	return config
 }
