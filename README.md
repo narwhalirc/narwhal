@@ -16,6 +16,7 @@ Currently this functionality includes:
 
 - Admin / Op functionality
   - Channel-specific banning, kicking, unbanning, "unkicking". Note that Narwhal **must be an op for this**. It will try to op itself when joining a channel.
+  - Add /remove users from Admins list. Supports exact user matching, host, and user@host.
   - Add / remove messages from AutoKick MessageMatches list.
   - Add / remove users from AutoKick list.
   - Add / remove users from Blacklist.
@@ -25,7 +26,7 @@ Currently this functionality includes:
   - Can automatically kick a user based on a message. Supports exact message matching, basic globbing, and regex.
   - Can automatically ban a user after they repeatedly rejoin after being kicked.
 - Blacklisting
-  - Ignores requests to the bot by specific users. Supports basic globbing currently.
+  - Ignores requests to the bot by specific users. Supports exact user matching, basic globbing, regex, and host.
 - Replacer
   - Can replace own or other user messages. Uses the syntax: `.r username, s/searchword/replacerword/`
 - Slap
