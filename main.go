@@ -1,7 +1,7 @@
 package main
 
 import (
-	"tusk"
+	"github.com/narwhalirc/tusk"
 )
 
 func main() {

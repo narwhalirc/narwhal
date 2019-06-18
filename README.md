@@ -38,6 +38,8 @@ Currently this functionality includes:
   - Custom Reddit URL parsing to present title and score (includes upvotes)
   - Custom Youtube URL parsing to present desktop and mobile links.
 
+**Note: All functionality for Narwhal is provided by our [Tusk](https://github.com/narwhalirc/tusk) Go pkg.**
+
 ## Plans
 
 To be absolutely clear, Narwhal isn't remotely ready for use. Like I'm not even going to give you documentation on building, that's how early it is.

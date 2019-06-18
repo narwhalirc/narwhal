@@ -7,14 +7,9 @@ Version = 0.1
 	[Projects.narwhal]
 		Binary = true
 		Destination = "build/narwhal"
+        DisableNestedEnvironment = true
+        EnableGoModules = true
 		Plugin = "go"
 		Requires = ["tusk"]
-		Source = "src/narwhal/*.go"
+		Source = "*.go"
 		Type = "binary"
-	[Projects.tusk]
-		ConsolidateChildDirs = true
-		Destination = ""
-		Plugin = "go"
-		SimpleName = "tusk"
-		Source = "src/tusk/*.go"
-		Type = "package"
