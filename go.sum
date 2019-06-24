@@ -1,0 +1,15 @@
+github.com/BurntSushi/toml v0.3.1 h1:WXkYYl6Yr3qBf1K79EBnL4mak0OimBfB0XUf9Vl28OQ=
+github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
+github.com/JoshStrobl/trunk v0.0.0-20181002153148-d43b81798735 h1:TGvnxwoz/Und+rEVlyFur39dxxp1OS9J2IFLxNHgePY=
+github.com/JoshStrobl/trunk v0.0.0-20181002153148-d43b81798735/go.mod h1:u89KTMPXdLu7DvOY5m3fY15FCpvVYDglT50pRVgli3c=
+github.com/PuerkitoBio/goquery v1.5.0 h1:uGvmFXOA73IKluu/F84Xd1tt/z07GYm8X49XKHP7EJk=
+github.com/PuerkitoBio/goquery v1.5.0/go.mod h1:qD2PgZ9lccMbQlc7eEOjaeRlFQON7xY8kdmcsrnKqMg=
+github.com/andybalholm/cascadia v1.0.0 h1:hOCXnnZ5A+3eVDX8pvgl4kofXv2ELss0bKcqRySc45o=
+github.com/andybalholm/cascadia v1.0.0/go.mod h1:GsXiBklL0woXo1j/WYWtSYYC4ouU9PqHO0sqidkEA4Y=
+github.com/lrstanley/girc v0.0.0-20190210212025-51b8e096d398 h1:a40kRmhA1p2XFJ6gqXfCExSyuDDCp/U9LA8ZY27u2Lk=
+github.com/lrstanley/girc v0.0.0-20190210212025-51b8e096d398/go.mod h1:7cRs1SIBfKQ7e3Tam6GKTILSNHzR862JD0JpINaZoJk=
+github.com/narwhalirc/tusk v0.0.0-20190624161546-0fe9cde01743 h1:B09H0bPDasR1MLcAnBGDokenj/mWTXejOV2JgRY+5q4=
+github.com/narwhalirc/tusk v0.0.0-20190624161546-0fe9cde01743/go.mod h1:3v5lfC8BXY8MzeNRsOowC17EY+9NTEDC3lu9n/WgL2o=
+golang.org/x/net v0.0.0-20180218175443-cbe0f9307d01/go.mod h1:mL1N/T3taQHkDXs73rZJwtUhF3w3ftmwwsq0BUmARs4=
+golang.org/x/net v0.0.0-20181114220301-adae6a3d119a h1:gOpx8G595UYyvj8UK4+OFyY4rx037g3fmfhe5SasG3U=
+golang.org/x/net v0.0.0-20181114220301-adae6a3d119a/go.mod h1:mL1N/T3taQHkDXs73rZJwtUhF3w3ftmwwsq0BUmARs4=
