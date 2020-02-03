@@ -10,6 +10,5 @@ Version = 0.1
         DisableNestedEnvironment = true
         EnableGoModules = true
 		Plugin = "go"
-		Requires = ["tusk"]
 		Source = "*.go"
 		Type = "binary"

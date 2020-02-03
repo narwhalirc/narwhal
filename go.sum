@@ -6,10 +6,11 @@ github.com/PuerkitoBio/goquery v1.5.0 h1:uGvmFXOA73IKluu/F84Xd1tt/z07GYm8X49XKHP
 github.com/PuerkitoBio/goquery v1.5.0/go.mod h1:qD2PgZ9lccMbQlc7eEOjaeRlFQON7xY8kdmcsrnKqMg=
 github.com/andybalholm/cascadia v1.0.0 h1:hOCXnnZ5A+3eVDX8pvgl4kofXv2ELss0bKcqRySc45o=
 github.com/andybalholm/cascadia v1.0.0/go.mod h1:GsXiBklL0woXo1j/WYWtSYYC4ouU9PqHO0sqidkEA4Y=
-github.com/lrstanley/girc v0.0.0-20190210212025-51b8e096d398 h1:a40kRmhA1p2XFJ6gqXfCExSyuDDCp/U9LA8ZY27u2Lk=
 github.com/lrstanley/girc v0.0.0-20190210212025-51b8e096d398/go.mod h1:7cRs1SIBfKQ7e3Tam6GKTILSNHzR862JD0JpINaZoJk=
-github.com/narwhalirc/tusk v0.0.0-20191023171646-117ea1590644 h1:WhlzxsMKqK1B9u9W7poXRNSZuBH1Nk2nIDnY3fPm+bA=
-github.com/narwhalirc/tusk v0.0.0-20191023171646-117ea1590644/go.mod h1:3v5lfC8BXY8MzeNRsOowC17EY+9NTEDC3lu9n/WgL2o=
+github.com/lrstanley/girc v0.0.0-20190801035559-4fc93959e1a7 h1:BS9tqL0OCiOGuy/CYYk2gc33fxqaqh5/rhqMKu4tcYA=
+github.com/lrstanley/girc v0.0.0-20190801035559-4fc93959e1a7/go.mod h1:liX5MxHPrwgHaKowoLkYGwbXfYABh1jbZ6FpElbGF1I=
+github.com/narwhalirc/tusk v0.0.0-20200203214700-8eaa58e026a3 h1:dn9kTGbzl5myWiOSzZeVfJgCOx7LqvQ5ZeZpGBy9Qk0=
+github.com/narwhalirc/tusk v0.0.0-20200203214700-8eaa58e026a3/go.mod h1:tWfaTNg88doBYvvOy/JfV700/iuz8xNOkE77ToLDvEY=
 golang.org/x/net v0.0.0-20180218175443-cbe0f9307d01/go.mod h1:mL1N/T3taQHkDXs73rZJwtUhF3w3ftmwwsq0BUmARs4=
 golang.org/x/net v0.0.0-20181114220301-adae6a3d119a h1:gOpx8G595UYyvj8UK4+OFyY4rx037g3fmfhe5SasG3U=
 golang.org/x/net v0.0.0-20181114220301-adae6a3d119a/go.mod h1:mL1N/T3taQHkDXs73rZJwtUhF3w3ftmwwsq0BUmARs4=
