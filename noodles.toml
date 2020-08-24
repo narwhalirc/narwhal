@@ -10,6 +10,6 @@ Version = 0.1
 		DisableNestedEnvironment = true
 		EnableGoModules = true
 		Plugin = "go"
-		Private = ["github.com"] # Ignore github.com caching since updating Narwhal against tusk can be time sensitive
+		Private = ["github.com"] # Ignore github.com caching since updating against tusk can be time sensitive
 		Source = "*.go"
 		Type = "binary"
