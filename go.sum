@@ -11,8 +11,8 @@ github.com/andybalholm/cascadia v1.0.0 h1:hOCXnnZ5A+3eVDX8pvgl4kofXv2ELss0bKcqRy
 github.com/andybalholm/cascadia v1.0.0/go.mod h1:GsXiBklL0woXo1j/WYWtSYYC4ouU9PqHO0sqidkEA4Y=
 github.com/lrstanley/girc v0.0.0-20190801035559-4fc93959e1a7 h1:BS9tqL0OCiOGuy/CYYk2gc33fxqaqh5/rhqMKu4tcYA=
 github.com/lrstanley/girc v0.0.0-20190801035559-4fc93959e1a7/go.mod h1:liX5MxHPrwgHaKowoLkYGwbXfYABh1jbZ6FpElbGF1I=
-github.com/narwhalirc/tusk v0.0.0-20200914184642-85bcd05fd316 h1:3PSnE7/E2b1bzYjLLv5WZS0Xr9QbTMTrxr1ArHN5HPw=
-github.com/narwhalirc/tusk v0.0.0-20200914184642-85bcd05fd316/go.mod h1:d2f2rBlvQYacB9KouIFkxH+eSeKIrLYZLRRKuHJAgPE=
+github.com/narwhalirc/tusk v0.0.0-20200914192028-6b3cd732bbb2 h1:ilejctDzGYF9JbjGjFRVKumIgyOvlxm+dfkuVdQDsvQ=
+github.com/narwhalirc/tusk v0.0.0-20200914192028-6b3cd732bbb2/go.mod h1:d2f2rBlvQYacB9KouIFkxH+eSeKIrLYZLRRKuHJAgPE=
 golang.org/x/net v0.0.0-20180218175443-cbe0f9307d01/go.mod h1:mL1N/T3taQHkDXs73rZJwtUhF3w3ftmwwsq0BUmARs4=
 golang.org/x/net v0.0.0-20181114220301-adae6a3d119a h1:gOpx8G595UYyvj8UK4+OFyY4rx037g3fmfhe5SasG3U=
 golang.org/x/net v0.0.0-20181114220301-adae6a3d119a/go.mod h1:mL1N/T3taQHkDXs73rZJwtUhF3w3ftmwwsq0BUmARs4=
